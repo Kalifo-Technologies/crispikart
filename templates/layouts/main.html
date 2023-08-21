@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'layouts/masters/head.html' %}
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+
+<div class="wrapper">
+
+  <!-- Preloader -->
+  {% comment %} <div class="preloader flex-column justify-content-center align-items-center">
+    {% load static %}
+    <img class="animation__wobble" src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTELogo" height="60" width="60">
+  </div> {% endcomment %}
+
+  <!-- Navbar -->
+  {% include 'layouts/partials/header.html' %}
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  {% include 'layouts/partials/sidebar.html' %}    
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    {% block 'content' %} {% endblock %}
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-light">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+
+  <!-- Main Footer -->
+  {% include 'layouts/partials/footer.html' %}
+</div>
+<!-- ./wrapper -->
+{% load static %}
+<!-- REQUIRED SCRIPTS -->
+{% include 'layouts/masters/scripts.html' %}
+
+</body>
+</html>

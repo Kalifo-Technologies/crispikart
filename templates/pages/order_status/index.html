@@ -1,0 +1,329 @@
+{% extends 'layouts/main.html' %}
+
+{% block 'content' %}
+    <!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Order Status</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          {% comment %} <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard v2</li>
+          </ol> {% endcomment %}
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Info boxes -->
+      
+      <div class="card">
+        <div class="card-header">
+            <a href="#" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#addOrderStatusModal">+ Add</a>
+        </div>
+        <div class="card-body">
+          
+          <table class="table table-striped" id="orderStatusTable">
+            <thead>
+              <tr>
+                <th>NO</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% if orderStatusCount > 0 %}
+              {% for os in orderStatus %}
+              
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ os.name }}</td>
+                  <td class="float-right">
+                    <a href="#" id='editOrderStatusBtn' data-edit-name="{{ os.name }}" data-edit-id="{{ os.id }}" class="btn btn-warning btn-sm editOrderStatusBtn"><i class="fa fa-edit" data-toggle="modal" data-target="#editOrderStatusModal"></i></a> 
+                    <a href="#" id='deleteOrderStatusBtn' data-delete-id="{{ os.id }}" class="btn btn-danger btn-sm deleteOrderStatusBtn"><i class="fa fa-trash" data-toggle="modal" data-target="#deleteOrderStatusModal"></i></a>
+                  </td>
+                </tr>
+              {% endfor %}
+              {% else %}
+                <tr class="text-center">
+                  <td colspan="3">No data available in table</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer">
+          {% if orderStatus and orderStatus.has_next or orderStatus.has_previous %}
+          <div class="pl-2">
+            <nav aria-label="Page navigation example ml-5">
+              <ul class="pagination float-right">
+      
+                {% if orderStatus.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{orderStatus.previous_page_number}}" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                {% endif %}
+      
+                {% for n in nums %}
+                <li class="page-item">
+                {% if forloop.counter == orderStatus.number %}
+                    <a class="page-link active bg-blue">{{forloop.counter}}</a>
+                {% else %} 
+                    <a class="page-link" href="?page={{ forloop.counter }}">{{forloop.counter}}</a>
+                {% endif %}
+                </li>
+                {% endfor %}
+      
+                {% if orderStatus.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{orderStatus.next_page_number}}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                {% endif %}
+      
+              </ul>
+            </nav>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <!-- /.row -->
+    </div><!--/. container-fluid -->
+  </section>
+  <!-- /.content -->
+
+    {% if groups and groups.has_next or groups.has_previous %}
+    <div class="pl-2">
+      <nav aria-label="Page navigation example ml-5">
+        <ul class="pagination">
+
+          {% if groups.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{groups.previous_page_number}}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+          {% endif %}
+
+          {% for n in nums %}
+            <li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{forloop.counter}}</a></li>
+          {% endfor %}
+
+          {% if groups.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{groups.next_page_number}}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          {% endif %}
+
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
+    
+  <!-- Add Group Modal -->
+  <div class="modal fade" id="addOrderStatusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Order Status</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{% url 'addOrderStatus' %}" method="POST" id="addOrderStatusForm">
+          {% csrf_token %}
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Status <strong class="text-danger">*</strong></label>
+                <input type="text" name="name" id="name-field" class="form-control">
+                <span class="invalid-feedback"></span>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary btnSave">Save</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Group Modal -->
+
+  <div class="modal fade" id="editOrderStatusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Order Status</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{% url 'editOrderStatus' %}" method="POST" id="editOrderStatusForm">
+          {% csrf_token %}
+          <div class="modal-body">
+            <div class="form-group">
+                <label>Status <strong class="text-danger">*</strong></label>
+                <input type="text" id="edit-name-field" name="name" class="form-control">
+                <input type="hidden" id="edit-id" name="id" class="form-control">
+                <span class="invalid-feedback"></span>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary btnUpdate">Update</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- delete Group modal -->
+
+  <!-- Modal HTML -->
+  <div id="deleteOrderStatusModal" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <div class="icon-box">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </div> -->
+          <h4 class="modal-title">Are you sure?</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+
+        <form action="{% url 'deleteOrderStatus' %}" method="POST" id="deleteOrderStatusForm">
+
+          {% csrf_token %}
+          <input type="hidden" id="delete-id" name="id">
+
+        <div class="modal-body">
+          <p>Do you really want to delete these records? This process cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger btnDelete">Delete</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  
+
+  {% load static %}
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    {% comment %} <script src="{% static 'js/ajax.js' %}"></script> {% endcomment %}
+    <script>
+      $(function(){
+        
+        $("#addOrderStatusForm").on('click', '.btnSave', function(e){
+          e.preventDefault();
+          
+          $.ajax({
+            url: $("#addOrderStatusForm").attr('action'),
+            type: "POST",
+            data: $("#addOrderStatusForm").serialize(),
+
+            success: function(response) {
+              toastr.success(response.message);
+              $("#addOrderStatusModal").modal('hide');
+              $("#addOrderStatusForm").trigger('reset');
+              $("#name-field").removeClass('is-invalid');
+              $(".invalid-feedback").text("");
+              setTimeout(function(){
+                location.reload();
+              }, 1000);
+            },
+            error: function(error) {
+              if(error.responseJSON.name != '') {
+                $("#name-field").addClass('is-invalid');
+                $(".invalid-feedback").text(error.responseJSON.name);
+              }
+              
+            }
+          });
+        });
+
+        $("#orderStatusTable").on('click', '.editOrderStatusBtn', function() {
+          let id = $(this).data("edit-id");
+          let name = $(this).data('edit-name');
+          $("#edit-id").val(id);
+          $("#edit-name-field").val(name);
+        
+        });
+
+        $("#editOrderStatusForm").on('click', '.btnUpdate', function(e){
+          e.preventDefault();
+          
+          $.ajax({
+            url: $("#editOrderStatusForm").attr('action'),
+            type: "POST",
+            data: $("#editOrderStatusForm").serialize(),
+
+            success: function(response) {
+              toastr.success(response.message);
+              $("#editOrderStatusModal").modal('hide');
+              $("#editOrderStatusForm").trigger('reset');
+              $("#edit-name-field").removeClass('is-invalid');
+              $(".invalid-feedback").text("");
+              setTimeout(function(){
+                location.reload();
+              }, 1000);
+            },
+            error: function(error) {
+              if(error.responseJSON.name != '') {
+                $("#edit-name-field").addClass('is-invalid');
+                $(".invalid-feedback").text(error.responseJSON.name);
+              }
+              
+            }
+          });
+        });
+
+        $("#orderStatusTable").on('click', '.deleteOrderStatusBtn', function() {
+          let id = $(this).data("delete-id");
+          $("#delete-id").val(id);
+        });
+
+        $("#deleteOrderStatusForm").on('click', '.btnDelete', function(e){
+          e.preventDefault();
+          
+          $.ajax({
+            url: $("#deleteOrderStatusForm").attr('action'),
+            type: "POST",
+            data: $("#deleteOrderStatusForm").serialize(),
+
+            success: function(response) {
+              toastr.success(response.message);
+              $("#deleteOrderStatusModal").modal('hide');
+              setTimeout(function(){
+                location.reload();
+              }, 1000);
+            },
+            error: function(error) {
+              
+            }
+          });
+        });
+      });
+    </script>
+    {% comment %} <script src="{% static 'js/groups.js' %}"></script> {% endcomment %}
+  {% endblock %}
