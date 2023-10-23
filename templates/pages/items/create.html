@@ -1,0 +1,132 @@
+{% extends 'layouts/main.html' %}
+
+{% block 'content' %}
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Add Food Item</h4>
+
+  <!-- Basic Layout -->
+  <div class="row">
+    <div class="col-xl">
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          {% comment %} <h5 class="mb-0">Add Food Item</h5> {% endcomment %}
+          {% comment %} <small class="text-muted float-end"></small> {% endcomment %}
+        </div>
+        <div class="card-body">
+          <form action="{% url 'addItem' %}" method="POST" enctype="multipart/form-data">    
+            {% csrf_token %}
+              <div class="row">
+              
+              <div class="mb-3 col-lg-6">
+                  <label for="name" class="text-muted">Item Name<span style="color: red;">*</span></label>
+                  <input type="text" name="name" id="name" class="form-control {% if validation_errors.name %} is-invalid {% endif %}" value="{{ context.old_name|default:'' }}">
+                  {% if validation_errors.name %}
+                    <span class="invalid-feedback">{{ validation_errors.name }}</span>
+                  {% endif %}
+              </div>
+              <!-- /.form-group -->
+              <div class="mb-3 col-lg-3">
+                  <label for="price" class="text-muted">Price<span style="color: red;">*</span></label>
+                  <input type="number" name="price" id="price" class="form-control {% if validation_errors.price %} is-invalid {% endif %}" value="{{ context.old_price|default:'' }}">
+                  {% if validation_errors.price %}
+                    <span class="invalid-feedback">{{ validation_errors.price }}</span>
+                  {% endif %}
+                  
+              </div>
+              <!-- /.form-group -->
+
+              <div class="mb-3 col-lg-3">
+                  <label for="" class="text-muted">Quantity<span style="color: red;">*</span></label>
+                  <input type="number" name="quantity" id="quantity" class="form-control {% if validation_errors.quantity %} is-invalid {% endif %}" value="{{ context.old_quantity|default:'' }}">
+                  {% if validation_errors.quantity %}
+                    <span class="invalid-feedback">{{ validation_errors.quantity }}</span>
+                  {% endif %}
+              </div>
+            </div>
+          
+            <!-- /.col -->
+            <div class="row">
+              
+              <!-- /.form-group -->
+              <div class="mb-3">
+                  <label for="" class="text-muted">Item description:</label></th>
+                  <textarea type="textarea" id='description' name='description' class="form-control">{{ context.old_description|default:'' }}</textarea>
+                  
+              </div>
+              <!-- /.form-group -->
+            </div>
+      
+          
+          <div class="row">
+            
+              <div class="mb-3 col-lg-4">
+                  <label for="" class="text-muted">Availabilities</label></th>
+                  {% for group in groups %}
+                  <div class="form-check d-flex justify-content-left mb-1">
+                    <input class="form-check-input" type="checkbox" name="group[]" id="defaultCheck1" value="{{ group.id }}" />&nbsp; {{ group.name }}
+                  </div>
+                  {% endfor %}
+                  {% if validation_errors.group %}
+                    <span class="invalid-feedback">{{ validation_errors.group }}</span>
+                  {% endif %}
+              </div>
+
+              <div class="mb-3 col-lg-4">
+                <label for="" class="text-muted">Addon</label></th>
+                {% for addon in addons %}
+                <div class="form-check d-flex justify-content-left mb-1">
+                  <input class="form-check-input" type="checkbox" name="addon[]" id="defaultCheck1" value="{{ addon.id }}" />&nbsp; {{ addon.name }}
+                </div>
+                {% endfor %}
+                {% if validation_errors.group %}
+                  <span class="invalid-feedback">{{ validation_errors.group }}</span>
+                {% endif %}
+            </div>
+              
+              <div class="mb-3 col-lg-4">
+                  <label for="" class="text-muted">Select Category:</label>    
+                  <select name="category[]" class="form-control {% if validation_errors.category %} is-invalid {% endif %}" multiple>
+                      <option value="">Select Category</option>
+                      {% for category in categories %}
+                          <option {% if context.old_category|default:'' %} selected {% endif %} value="{{ category.id }}">{{ category.name }}</option>
+                      {% endfor %}
+                  </select>
+                  {% if validation_errors.category %}
+                    <span class="invalid-feedback">{{ validation_errors.category }}</span>
+                  {% endif %}
+              
+              </div>
+            </div>
+          
+
+          <div class="row">
+            
+              <div class="mb-3 col-lg-6">
+                  <label for="" class="text-muted">Availability</label>
+                  <br>
+                  <input type="radio" name="service" {% if context.old_service|default:'' %} checked {% endif %} class="{% if validation_errors.service %} is-invalid {% endif %}" id="pick" value="PickUp"> Pick Up
+                  &nbsp; <input type="radio" name="service" {% if context.old_service|default:'' %} checked {% endif %} class="{% if validation_errors.service %} is-invalid {% endif %}" id="delivery" value="Delivery"> Delivery
+                  {% if validation_errors.service %}
+                    <span class="invalid-feedback">{{ validation_errors.service }}</span>
+                  {% endif %}   
+              </div>
+              
+              <div class="mb-3 col-lg-6">
+                  <label for="formFileMultiple" class="form-label">Upload Photos</label>
+                  <input class="form-control" type="file" name="food_images[]" id="image-field" multiple />
+              </div>
+            </div>
+          
+
+          <div class="row">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary float-right">Save</button> 
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>
+{% endblock %}

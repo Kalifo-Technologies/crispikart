@@ -38,6 +38,7 @@ def addDelivaryBoy(request):
                 place = req.get('place')
                 photo = request.FILES.get('photo')
                 mobile_no = req.get('mobile_no')
+                username = req.get('username')
                 password = req.get('password')
                 confirm_password = req.get('confirm_password')
                 hashed_password = make_password(password)
@@ -52,6 +53,10 @@ def addDelivaryBoy(request):
                     errors['mobile_no'] = 'Mobile no field is required'
                 if not validate_mobile_number(mobile_no):   
                     errors['mobile_no'] = 'Invalid mobile no.'    
+                if not username:
+                    errors['username'] = 'Username field is required'
+                if DelivaryBoy.objects.filter(username = username).exists():
+                    errors['username'] = 'Username is already exist'             
                 if not password:
                     errors['password'] = 'Password field is required'     
                 if password != confirm_password:
@@ -66,7 +71,8 @@ def addDelivaryBoy(request):
                     photo = photo,
                     place = place,
                     mobile_no = mobile_no,
-                    password = hashed_password,
+                    username = username,
+                    password = hashed_password
                 )
 
                 return JsonResponse({"message": "Delivary Boy created successfully"})

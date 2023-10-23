@@ -1,56 +1,28 @@
 {% extends 'layouts/main.html' %}
 
 {% block 'content' %}
-    <!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0">Groups</h1>
-        </div><!-- /.col -->
-        <div class="col-sm-6">
-          {% comment %} <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard v2</li>
-          </ol> {% endcomment %}
-        </div><!-- /.col -->
-      </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </div>
-  <!-- /.content-header -->
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Groups</h4>
 
-  <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
-      <!-- Info boxes -->
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
-            <strong>{{message}}</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-        {% endfor %}
-      {% endif %}
-      <div class="card">
-        <div class="card-header">
-            <a href="#" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#addGroupModal">+ Add</a>
-        </div>
-        <div class="card-body">
-          
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>NO</th>
-                <th>Name</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {% if groupsCount > 0 %}
+  <!-- Basic Bootstrap Table -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between">
+      <h4 class="d-flex justify-content-start">Groups</h4>
+      <a href="#" class="btn btn-primary d-flex justify-content-end" data-bs-toggle="modal" data-bs-target="#addGroupModal">+ Add</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+      <table class="table" id="categoriesTable">
+        <thead class="table-light">
+          <tr>
+            <th>NO</th>
+            <th>Name</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          {% if groupsCount > 0 %}
               {% for g in groups %}
               
               <tr>
@@ -59,8 +31,8 @@
                 <td>{{ g.StartTime }}</td>
                 <td>{{ g.EndTime }}</td>
                 <td class="float-right">
-                    <a href="#" id='editGroupBtn' class="btn btn-warning btn-sm" onclick='group_edit("{{g.id}}","{{g.name}}","{{g.StartTime|time:'H:i:s'}}","{{g.EndTime|time:'H:i:s'}}")'><i class="fa fa-edit" data-toggle="modal" data-target="#editGroupModal"></i></a> 
-                    <a href="#" id='deleteGroupBtn' class="btn btn-danger btn-sm" onclick="group_delete('{{g.id}}')"><i class="fa fa-trash trigger-btn" data-toggle="modal" data-target="#deleteGroupModal"></i></a>
+                    <a href="#" id='editGroupBtn' class="btn btn-warning btn-sm" onclick='group_edit("{{g.id}}","{{g.name}}","{{g.StartTime|time:'H:i:s'}}","{{g.EndTime|time:'H:i:s'}}")' data-bs-toggle="modal" data-bs-target="#editGroupModal"><i class="fa fa-edit"></i></a> 
+                    <a href="#" id='deleteGroupBtn' class="btn btn-danger btn-sm" onclick="group_delete('{{g.id}}')" data-bs-toggle="modal" data-bs-target="#deleteGroupModal"><i class="fa fa-trash trigger-btn"></i></a>
                 </td>
               </tr>
               {% endfor %}
@@ -68,254 +40,309 @@
                 <tr>
                   <td class="text-center" colspan="5">No data available in table</td>
                 </tr>
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
-        <div class="card-footer">
-          {% if groups and groups.has_next or groups.has_previous %}
-    <div class="pl-2">
-      <nav aria-label="Page navigation example ml-5">
-        <ul class="pagination float-right">
-
-          {% if groups.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{groups.previous_page_number}}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Previous</span>
-              </a>
-            </li>
           {% endif %}
-
-          {% for n in nums %}
-          <li class="page-item">
-          {% if forloop.counter == groups.number %}
-              <a class="page-link active bg-blue">{{forloop.counter}}</a>
-          {% else %} 
-              <a class="page-link" href="?page={{ forloop.counter }}">{{forloop.counter}}</a>
-          {% endif %}
-          </li>
-          {% endfor %}
-
-          {% if groups.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{groups.next_page_number}}" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-                <span class="sr-only">Next</span>
-              </a>
-            </li>
-          {% endif %}
-
-        </ul>
-      </nav>
+        </tbody>
+      </table>
     </div>
-    {% endif %}
-        </div>
-      </div>
-      <!-- /.row -->
-    </div><!--/. container-fluid -->
-  </section>
-  <!-- /.content -->
+    <div class="card-footer d-flex justify-content-end">
+      {% if groups and groups.has_next or groups.has_previous %}
+<div class="pl-2">
+  <nav aria-label="Page navigation example ml-5">
+    <ul class="pagination float-right">
 
-    
-    
-  <!-- Add Group Modal -->
-  <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Group</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+      {% if groups.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{groups.previous_page_number}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+      {% endif %}
+
+      {% for n in nums %}
+      <li class="page-item">
+      {% if forloop.counter == groups.number %}
+          <a class="page-link active btn-primary">{{forloop.counter}}</a>
+      {% else %} 
+          <a class="page-link" href="?page={{ forloop.counter }}">{{forloop.counter}}</a>
+      {% endif %}
+      </li>
+      {% endfor %}
+
+      {% if groups.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{groups.next_page_number}}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      {% endif %}
+
+    </ul>
+  </nav>
+</div>
+{% endif %}
         </div>
-        <form action="{% url 'addGroup' %}" method="POST" id="addGroupForm">
-          {% csrf_token %}
-        <div class="modal-body">
-            <div class="form-group">
-              <label>Name <strong class="text-danger">*</strong></label>
-              <input type="text" name="name" id="group-name-field" class="form-control">
-              <span class="group-name-error"></span>
-            </div>
-            <div class="form-group">
-              <label>Start Time <strong class="text-danger">*</strong></label>
-              <input type="time" name="StartTime" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>End Time <strong class="text-danger">*</strong></label>
-                <input type="time" name="EndTime" class="form-control">
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary btnSave">Save</button>
-        </div>
-        </form>
-      </div>
-    </div>
   </div>
+</div>
 
-  <!-- Edit Group Modal -->
-
-  <div class="modal fade" id="editGroupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit Group</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="{% url 'editGroup' %}" method="POST" id="editGroupForm">
-          {% csrf_token %}
-          <div class="modal-body">
-            <div class="form-group">
-                <label>Name <strong class="text-danger">*</strong></label>
-                <input type="text" id="g-name" name="name" class="form-control">
-                <span class="edit-group-name-error"></span>
-            </div>
-            <div class="form-group">    
-                <label>Start Time<strong class="text-danger">*</strong></label>
-                <input type="time" id="g-start" name="StartTime" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>End Time<strong class="text-danger">*</strong></label>
-                <input type="time" id="g-end" name="EndTime" class="form-control">
-            </div>    
+<!-- Add Group Modal -->
+<div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Group</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form action="{% url 'addGroup' %}" method="POST" id="addGroupForm">
+        {% csrf_token %}
+      <div class="modal-body">
+          <div class="mb-3">
+            <label>Name <strong class="text-danger">*</strong></label>
+            <input type="text" name="name" id="group-name-field" class="form-control">
+            <span class="group-name-error"></span>
           </div>
-        <input type="hidden" name="id" id="g-id">
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary btnUpdate">Update</button>
-        </div>
-        </form>
+          <div class="mb-3">
+            <label>Start Time <strong class="text-danger">*</strong></label>
+            <input type="time" name="StartTime" id="start-time-field" class="form-control">
+            <span class="start-time-field-error"></span>
+          </div>
+          <div class="mb-3">
+              <label>End Time <strong class="text-danger">*</strong></label>
+              <input type="time" name="EndTime" id="end-time-field" class="form-control">
+              <span class="end-time-field-error"></span>
+          </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary btnSave">Save</button>
+      </div>
+      </form>
     </div>
   </div>
+</div>
 
-  <!-- delete Group modal -->
+<!-- Edit Group Modal -->
 
-  <!-- Modal HTML -->
-  <div id="deleteGroupModal" class="modal fade">
-    <div class="modal-dialog modal-confirm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <!-- <div class="icon-box">
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </div> -->
-          <h4 class="modal-title">Are you sure?</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        </div>
-
-        <form action="{% url 'deleteGroup' %}" method="POST" id="deleteGroupForm">
-
-          {% csrf_token %}
-          <input type="hidden" id="gd-id" name="id">
-
+<div class="modal fade" id="editGroupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Group</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form action="{% url 'editGroup' %}" method="POST" id="editGroupForm">
+        {% csrf_token %}
         <div class="modal-body">
-          <p>Do you really want to delete these records? This process cannot be undone.</p>
+          <div class="mb-3">
+              <label>Name <strong class="text-danger">*</strong></label>
+              <input type="text" id="g-name" name="name" class="form-control">
+              <span class="edit-group-name-error"></span>
+          </div>
+          <div class="mb-3">    
+              <label>Start Time<strong class="text-danger">*</strong></label>
+              <input type="time" id="g-start" name="StartTime" class="form-control">
+              <span class="edit-g-start-error"></span>
+          </div>
+          <div class="mb-3">
+              <label>End Time<strong class="text-danger">*</strong></label>
+              <input type="time" id="g-end" name="EndTime" class="form-control">
+              <span class="edit-g-end-error"></span>
+          </div>    
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger btnDelete">Delete</button>
-        </div>
-        </form>
+      <input type="hidden" name="id" id="g-id">
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary btnUpdate">Update</button>
       </div>
+      </form>
     </div>
   </div>
+</div>
 
-  
+<!-- delete Group modal -->
 
-  {% load static %}
-    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'js/ajax.js' %}"></script>
-    <script>
-      $(function(){
+<!-- Modal HTML -->
+<div id="deleteGroupModal" class="modal fade">
+  <div class="modal-dialog modal-dialog-centered modal-confirm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <div class="icon-box">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </div> -->
+        <h4 class="modal-title">Are you sure?</h4>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form action="{% url 'deleteGroup' %}" method="POST" id="deleteGroupForm">
+
+        {% csrf_token %}
+        <input type="hidden" id="gd-id" name="id">
+
+      <div class="modal-body">
+        <p>Do you really want to delete these records? This process cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger btnDelete">Delete</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+                      <div
+                        class="bs-toast toast fade show bg-success category-toast d-none"
+                        role="alert"
+                        aria-live="assertive"
+                        aria-atomic="true"
+                      >
+                        <div class="toast-header">
+                          <i class="bx bx-bell me-2"></i>
+                          <div class="me-auto fw-semibold toast-title">Bootstrap</div>
+                          {% comment %} <small>11 mins ago</small> {% endcomment %}
+                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                          
+                        </div>
+                      </div>
+
+{% load static %}
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'assets/js/ajax.js' %}"></script>
+  <script>
+    $(function(){
         
-        $("#addGroupForm").on('click', '.btnSave', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#addGroupForm").attr('action'),
-            type: "POST",
-            data: $("#addGroupForm").serialize(),
+      $("#addGroupForm").on('click', '.btnSave', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+          url: $("#addGroupForm").attr('action'),
+          type: "POST",
+          data: $("#addGroupForm").serialize(),
 
-            success: function(response) {
-              toastr.success(response.message);
-              $("#addGroupModal").modal('hide');
-              $("#addGroupForm").trigger('reset');
-              $("#group-name-field").removeClass('is-invalid');
-              $(".group-name-error").removeClass('invalid-feedback');
-              $(".group-name-error").text('');
-              setTimeout(function(){
-                location.reload();
-              }, 1000);
-            },
-            error: function(error) {
-              console.log(error);
-              if(error.responseJSON.name != '') {
-                $("#group-name-field").addClass('is-invalid');
-                $(".group-name-error").addClass('invalid-feedback');
-                $(".group-name-error").text(error.responseJSON.name);
-              }
-              
+          success: function(response) {
+            toastr.success(response.message);
+            $("#addGroupModal").modal('hide');
+            $("#addGroupForm").trigger('reset');
+            $("#group-name-field").removeClass('is-invalid');
+            $(".group-name-error").removeClass('invalid-feedback');
+            $("#start-time-field").removeClass('is-invalid');
+            $(".start-time-field-error").removeClass('invalid-feedback');
+            $("#end-time-field").removeClass('is-invalid');
+            $(".end-time-field-error").removeClass('invalid-feedback');
+            $(".group-name-error").text('');
+            $(".start-time-field-error").text('');
+            $(".end-time-field-error").text('');
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            console.log(error);
+            if(error.responseJSON.name != '') {
+              $("#group-name-field").addClass('is-invalid');
+              $(".group-name-error").addClass('invalid-feedback');
+              $(".group-name-error").text(error.responseJSON.name);
             }
-          });
-        });
-
-        $("#editGroupForm").on('click', '.btnUpdate', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#editGroupForm").attr('action'),
-            type: "POST",
-            data: $("#editGroupForm").serialize(),
-
-            success: function(response) {
-              toastr.success(response.message);
-              $("#editGroupModal").modal('hide');
-              $("#editGroupForm").trigger('reset');
-              $("#g-name").removeClass('is-invalid');
-              $(".edit-group-name-error").removeClass('invalid-feedback');
-              $(".edit-group-name-error").text("");
-              setTimeout(function(){
-                location.reload();
-              }, 1000);
-            },
-            error: function(error) {
-              console.log(error);
-              if(error.responseJSON.name != '') {
-                $("#g-name").addClass('is-invalid');
-                $(".edit-group-name-error").addClass('invalid-feedback');
-                $(".edit-group-name-error").text(error.responseJSON.name);
-              }
-              
+            if(error.responseJSON.StartTime != '') {
+              $("#start-time-field").addClass('is-invalid');
+              $(".start-time-field-error").addClass('invalid-feedback');
+              $(".start-time-field-error").text(error.responseJSON.StartTime);
             }
-          });
-        });
-
-        $("#deleteGroupForm").on('click', '.btnDelete', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#deleteGroupForm").attr('action'),
-            type: "POST",
-            data: $("#deleteGroupForm").serialize(),
-
-            success: function(response) {
-              toastr.success(response.message);
-              $("#deleteGroupModal").modal('hide');
-              setTimeout(function(){
-                location.reload();
-              }, 1000);
-            },
-            error: function(error) {
-              
+            if(error.responseJSON.EndTime != '') {
+              $("#end-time-field").addClass('is-invalid');
+              $(".end-time-field-error").addClass('invalid-feedback');
+              $(".end-time-field-error").text(error.responseJSON.EndTime);
             }
-          });
+            
+          }
         });
       });
-      
-    </script>
-   
-  {% endblock %}
+
+      $("#editGroupForm").on('click', '.btnUpdate', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+          url: $("#editGroupForm").attr('action'),
+          type: "POST",
+          data: $("#editGroupForm").serialize(),
+
+          success: function(response) {
+            toastr.success(response.message);
+            $("#editGroupModal").modal('hide');
+            $("#editGroupForm").trigger('reset');
+            $("#g-name").removeClass('is-invalid');
+            $("#g-start").removeClass('is-invalid');
+            $("#g-end").removeClass('is-invalid');
+            $(".edit-group-name").removeClass('d-none');
+            $(".edit-group-name-error").removeClass('invalid-feedback');
+            $(".edit-g-start-error").removeClass('invalid-feedback');
+            $(".edit-g-end-error").removeClass('invalid-feedback');
+            $(".edit-g-start-error").text("");
+            $(".edit-g-end-error").text("");
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            console.log(error);
+            if(error.responseJSON.name != '') {
+              $("#g-name").addClass('is-invalid');
+              $(".edit-group-name-error").addClass('invalid-feedback');
+              $(".edit-group-name-error").text(error.responseJSON.name);
+            }
+            if(error.responseJSON.StartTime != '') {
+              $("#g-start").addClass('is-invalid');
+              $(".edit-g-start-error").addClass('invalid-feedback');
+              $(".edit-g-start-error").text(error.responseJSON.StartTime);
+            }
+            if(error.responseJSON.EndTime != '') {
+              $("#g-end").addClass('is-invalid');
+              $(".edit-g-end-error").addClass('invalid-feedback');
+              $(".edit-g-end-error").text(error.responseJSON.EndTime);
+            }
+            
+          }
+        });
+      });
+
+      $("#deleteGroupForm").on('click', '.btnDelete', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+          url: $("#deleteGroupForm").attr('action'),
+          type: "POST",
+          data: $("#deleteGroupForm").serialize(),
+
+          success: function(response) {
+            toastr.success(response.message);
+            $("#deleteGroupModal").modal('hide');
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            
+          }
+        });
+      });
+    });
+  </script>
+{% endblock %}

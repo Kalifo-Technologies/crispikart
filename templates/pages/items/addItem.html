@@ -1,0 +1,72 @@
+{% extends 'layouts/main.html' %}
+
+{% block 'content' %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Add Food Item</h4>
+
+    <!-- Accordion -->
+    {% comment %} <h5 class="mt-4">Accordion</h5> {% endcomment %}
+    <div class="row">
+      <div class="col-md mb-3 mb-md-0">
+        <div class="accordion mt-3" id="accordionExample">
+          <div class="card accordion-item active">
+            <div class="accordion-header d-flex flex-direction-row p-2" id="headingOne">
+                <div class="profile-picture-upload">
+                    <input type="file" name="profile_image" accept="image/*" id="id_picture" class="d-none">
+                    {% load static %}
+                    <label for="id_picture">
+                        <img src="{% static 'images/default-item.png' %}" id="profile_image" width="150" height="150" alt="Choose Image"> 
+                    </label>
+                    
+                </div>
+                <div class="mb-3 col-lg-6" style="margin-left: 20px;">
+                    <label for="name" class="text-muted">Name<span style="color: red;">*</span></label>
+                    <input type="text" name="name" id="name" class="form-control {% if validation_errors.name %} is-invalid {% endif %}" value="{{ context.old_name|default:'' }}">
+                    {% if validation_errors.name %}
+                      <span class="invalid-feedback">{{ validation_errors.name }}</span>
+                    {% endif %}
+                </div>
+                
+                <!-- /.form-group -->
+                <div class="mb-3 col-lg-3" style="margin-left: 10px;">
+                    <label for="price" class="text-muted">Price<span style="color: red;">*</span></label>
+                    <input type="number" name="price" id="price" class="form-control {% if validation_errors.price %} is-invalid {% endif %}" value="{{ context.old_price|default:'' }}">
+                    {% if validation_errors.price %}
+                      <span class="invalid-feedback">{{ validation_errors.price }}</span>
+                    {% endif %}
+                    
+                </div>
+                
+                <button
+                          type="button"
+                          class="accordion-button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#accordionOne"
+                          aria-expanded="true"
+                          aria-controls="accordionOne"
+                        >
+                        
+                        </button>
+                    </div>
+            
+          </div>
+          <div class="card mt-2">
+            <div
+              id="accordionOne"
+              class="accordion-collapse collapse show"
+              data-bs-parent="#accordionExample"
+            >
+            
+              <div class="accordion-body">
+                {% comment %} Lemon drops chocolate cake gummies carrot cake chupa chups muffin topping. Sesame snaps icing
+                marzipan gummi bears macaroon dragée danish caramels powder. Bear claw dragée pastry topping
+                soufflé. Wafer gummi bears marshmallow pastry pie. {% endcomment %}
+              </div>
+            </div>
+        </div>
+          </div>
+        </div>
+    </div>
+</div>
+</div>
+  {% endblock %} 

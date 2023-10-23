@@ -25,16 +25,20 @@ def addGroup(request):
 
     if request.method == "POST":
         req = request.POST
-        name = req.get('name')
-        start_time = req.get('StartTime')
-        end_time = req.get('EndTime')
+        name = req.get('name', '')
+        start_time = req.get('StartTime', '')
+        end_time = req.get('EndTime', '')
     try:
 
         errors = {}
         if not name:
             errors['name'] = 'Group name field is required'
         if Group.objects.filter(name=name).exists():
-            errors['name'] = 'Group already exists with same name'      
+            errors['name'] = 'Group already exists with same name'
+        if not start_time:
+            errors['StartTime'] = 'Start Time field is required'
+        if not end_time:
+            errors['EndTime'] = 'End Time field is required'            
         if errors:
             return JsonResponse(errors, status=400)
         
@@ -43,6 +47,7 @@ def addGroup(request):
              StartTime=start_time,
              EndTime=end_time
         )
+        
         return JsonResponse({"message": "Group created successfully"})
     
     except ValidationError as e:
@@ -53,8 +58,8 @@ def editGroup(request):
 
     name = request.POST.get('name')
     g_id = request.POST.get('id')
-    start_time = request.POST.get('StartTime')
-    end_time = request.POST.get('EndTime')
+    start_time = request.POST.get('StartTime', '')
+    end_time = request.POST.get('EndTime', '')
 
     try:
         errors = {}
@@ -63,6 +68,10 @@ def editGroup(request):
             errors['name'] = 'Group name field is required'
         if Group.objects.exclude(id = g_id).filter(name=name).exists():
             errors['name'] = 'Group already exists with same name'
+        if not start_time:
+            errors['StartTime'] = 'Start Time field is required'
+        if not end_time:
+            errors['EndTime'] = 'End Time field is required'        
         if errors:
             return JsonResponse(errors, status=400)
 

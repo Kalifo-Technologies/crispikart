@@ -44,13 +44,32 @@ INSTALLED_APPS = [
     'Menu',
     'Groups',
     'Category',
+    'Addons',
+    'Items',
     'OrderStatus',
+    'Orders',
     'ProfileSetup',
     'DelivaryBoys',
     'User',
+    'Settings',
+    'api',
     'rest_framework',
-    'api.apps.ApiConfig',
+    'crispy_forms'
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -147,3 +166,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'sign-in'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'javidrk8921@gmail.com'
+EMAIL_HOST_PASSWORD = 'javid892107291'

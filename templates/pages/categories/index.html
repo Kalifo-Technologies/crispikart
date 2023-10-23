@@ -1,56 +1,28 @@
 {% extends 'layouts/main.html' %}
+
 {% block 'content' %}
-    <!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0">Categories</h1>
-        </div><!-- /.col -->
-        <div class="col-sm-6">
-          {% comment %} <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard v2</li>
-          </ol> {% endcomment %}
-        </div><!-- /.col -->
-      </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </div>
-  <!-- /.content-header -->
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Categories</h4>
 
-  <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
-      <!-- Info boxes -->
-      {% comment %} {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
-          <strong>{{message}}</strong>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      {% endfor %}
-      {% endif %} {% endcomment %}
-      <div class="card">
-        <div class="card-header">
-            <a href="#" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#addCategoryModal">+ Add</a>
-        </div>
-        <div class="card-body">
-          
-          <table class="table table-striped" id="categoriesTable">
-            <thead>
-              <tr>
-                <th>NO</th>
-                <th>Name</th>
-                <th>Group</th>
-                <th>Image</th>
-                <th></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {% if categoriesCount > 0 %}
+  <!-- Basic Bootstrap Table -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between">
+      <h4 class="d-flex justify-content-start">Categories</h4>
+      <a href="#" class="btn btn-primary d-flex justify-content-end" data-bs-toggle="modal" data-bs-target="#addCategoryModal">+ Add</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+      <table class="table" id="categoriesTable">
+        <thead class="table-light">
+          <tr>
+            <th>NO</th>
+            <th>Name</th>
+            <th>Group</th>
+            <th>Image</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          {% if categoriesCount > 0 %}
               {% for c in page_obj %}
               
               <tr>
@@ -58,10 +30,10 @@
                 <td>{{ c.name }}</td>
                 <td>{{ c.group.name }}</td>
                 {% load static %}
-                <td>{% if c.image != "" %}<img src="/media/{{ c.image }}" height="30" width="30">{% else %}<img src="{% static 'images/userImage.png' %}" height="30" width="30"> {% endif %}</td>
+                <td>{% if c.image != "" %}<img src="/media/{{ c.image }}" height="50" width="50">{% else %}<img src="{% static 'images/default-image.jpg' %}" height="50" width="50"> {% endif %}</td>
                 <td class="float-right">
-                  <a data-toggle="modal" data-id="{{ c.id }}" data-name="{{ c.name }}" data-group-id="{{ c.group_id }}" data-image="{{ c.image }}" data-target="#editCategoryModal" href='#' class="btn btn-warning btn-sm editCategoryBtn"><i class="fa fa-edit"></i></a> 
-                  <a data-toggle="modal" data-id="{{ c.id }}" data-target="#deleteCategoryModal" href='#' class="btn btn-danger btn-sm deleteCategoryBtn"><i class="fa fa-trash"></i></a>
+                  <a data-bs-toggle="modal" data-id="{{ c.id }}" data-name="{{ c.name }}" data-group-id="{{ c.group_id }}" data-image="{{ c.image }}" data-bs-target="#editCategoryModal" href='#' class="btn btn-warning btn-sm editCategoryBtn"><i class="fa fa-edit"></i></a> 
+                  <a data-bs-toggle="modal" data-id="{{ c.id }}" data-bs-target="#deleteCategoryModal" href='#' class="btn btn-danger btn-sm deleteCategoryBtn"><i class="fa fa-trash"></i></a>
                 </td>
               </tr>
               {% endfor %}
@@ -71,31 +43,10 @@
                
               </tr>
               {% endif %}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="5">
-                  <div class="pagination">
-                    {% comment %} {% if page_obj.has_previous %}
-                        <a class="btn btn-default btn-sm paginationBtn" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                    {% endif %}
-                    {% for num in page_obj.paginator.page_range %}
-                    {% if num == page_obj.number %}
-                        <a class="btn btn-default btn-sm paginationBtn ml-1 active">{{ num }}</a>
-                    {% else %}
-                        <a href="?page={{ num }}" class="btn btn-default btn-sm paginationBtn ml-1">{{ num }}</a>
-                    {% endif %}
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                        <a class="btn btn-default btn-sm paginationBtn ml-1" href="?page={{ num }}">Next</a>
-                    {% endif %} {% endcomment %}
-                </div>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-        <div class="card-footer">
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer d-flex justify-content-end">
           {% if page_obj and page_obj.has_next or page_obj.has_previous %}
           <div class="pl-2">
             <nav aria-label="Page navigation example ml-5">
@@ -113,7 +64,7 @@
                 {% for n in nums %}
                   <li class="page-item">
                   {% if forloop.counter == page_obj.number %}
-                    <a class="page-link active bg-blue">{{forloop.counter}}</a>
+                    <a class="page-link active btn-primary">{{forloop.counter}}</a>
                   {% else %} 
                     <a class="page-link" href="?page={{ forloop.counter }}">{{forloop.counter}}</a>
                   {% endif %}
@@ -134,213 +85,212 @@
           </div>
           {% endif %}
         </div>
-      </div>
-      <!-- /.row -->
-    </div><!--/. container-fluid -->
-  </section>
-  <!-- /.content -->
-
-  <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form id="addCategoryForm" action="{% url 'addCategory' %}" method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-        <div class="modal-body">
-            <div class="form-group">
-                <label>Name <strong class="text-danger">*</strong></label>
-                <input type="text" name="name" class="form-control" id="name-field">
-                <span class="invalid-feedback name-error-message"></span>
-            </div>
-
-            <div class="form-group">
-                <label>Group <strong class="text-danger">*</strong></label>
-                <select name="group_id" class="form-control" id="group-field">
-                  <option value="">-- Select Group --</option>
-                  {% for g in groups %}
-                    <option value="{{ g.id }}">{{ g.name }}</option>
-                  {% endfor %}
-                </select>
-                <span class="invalid-feedback group-error-message"></span>
-            </div>
-
-            <div class="form-group">
-              <label>Image </label>
-              
-              <div class="custom-file">
-                <input type="file" name="image" class="custom-file-input" id="image-field">
-                <label class="custom-file-label">Choose file</label>
-              </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary btnSave">Save</button>
-        </div>
-        </form>
-      </div>
-    </div>
   </div>
-  
+</div>
 
-   <!-- Edit Group Modal -->
-
-   <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="{% url 'editCategory' %}" method="POST" enctype="multipart/form-data" id="editCategoryForm">
-          {% csrf_token %}
-          <input type="hidden" id="edit-category-id" name="edit_id">
-          <div class="modal-body">
-            <div class="form-group">
-                <label>Name <strong class="text-danger">*</strong></label>
-                <input type="text" id="edit-category-name" name="name" class="form-control">
-                <span class="invalid-feedback edit-name-error-message"></span>
-            </div>
-
-            <div class="form-group">
-                <label>Group <strong class="text-danger">*</strong></label>
-                <select id="edit-category-group-id" name="group_id" class="form-control">
-                  <option value="">-- Select Group --</option>
-                  {% for g in groups %}
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCenterTitle">Add Category</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form id="addCategoryForm" action="{% url 'addCategory' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+      <div class="modal-body">
+          <div class="mb-3">
+              <label>Name <strong class="text-danger">*</strong></label>
+              <input type="text" name="name" class="form-control" id="name-field">
+              <span class="invalid-feedback name-error-message"></span>
+          </div>
+          
+          <div class="mb-3">
+              <label>Group <strong class="text-danger">*</strong></label>
+              <select name="group_id" class="form-control" id="group-field">
+                <option value="">-- Select Group --</option>
+                {% for g in groups %}
                   <option value="{{ g.id }}">{{ g.name }}</option>
-                  {% endfor %}
-                </select>
-                <span class="invalid-feedback edit-group-error-message"></span>
-            </div>
-            <div id="imageShowDiv">
-              <img id="imageShow" width="50" height="50">
-            </div>
-            <div class="form-group">
-              <label>Image </label>
-              <div class="custom-file">
-                <input type="file" id="edit-category-image" name="image" class="custom-file-input">
-                <label class="custom-file-label">Choose file</label>
-              </div>
-              
-            </div>
-        </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary btnUpdate">Update</button>
-        </div>
-        </form>
+                {% endfor %}
+              </select>
+              <span class="invalid-feedback group-error-message"></span>
+          </div>
+          <div id="addImageShowDiv" class="d-flex justify-content-center">
+            <img id="addImageShow" width="50%" height="50%">
+          </div>
+          <div class="mb-3">
+            <label for="formFile" class="form-label">Image </label>
+            <input class="form-control" name="image" type="file" id="image-field" />
+          </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary btnSave">Save</button>
+      </div>
+      </form>
     </div>
   </div>
+</div>
 
-  <!-- delete Group modal -->
 
-  <!-- Modal HTML -->
-  <div id="deleteCategoryModal" class="modal fade">
-    <div class="modal-dialog modal-confirm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <!-- <div class="icon-box">
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </div> -->
-          <h4 class="modal-title">Are you sure?</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        </div>
+ <!-- Edit Group Modal -->
 
-        <form action="{% url 'deleteCategory' %}" method="POST" id="deleteCategoryForm">
-
-          {% csrf_token %}
-          <input type="hidden" id="delete-category-id" name="delete_id">
-
+ <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form action="{% url 'editCategory' %}" method="POST" enctype="multipart/form-data" id="editCategoryForm">
+        {% csrf_token %}
+        <input type="hidden" id="edit-category-id" name="edit_id">
         <div class="modal-body">
-          <p>Do you really want to delete these records? This process cannot be undone.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger btnDelete">Delete</button>
-        </div>
-        </form>
+          <div class="mb-3">
+              <label>Name <strong class="text-danger">*</strong></label>
+              <input type="text" id="edit-category-name" name="name" class="form-control">
+              <span class="invalid-feedback edit-name-error-message"></span>
+          </div>
+
+          <div class="mb-3">
+              <label>Group <strong class="text-danger">*</strong></label>
+              <select id="edit-category-group-id" name="group_id" class="form-control">
+                <option value="">-- Select Group --</option>
+                {% for g in groups %}
+                <option value="{{ g.id }}">{{ g.name }}</option>
+                {% endfor %}
+              </select>
+              <span class="invalid-feedback edit-group-error-message"></span>
+          </div>
+          <div id="imageShowDiv" class="d-flex justify-content-center">
+            <img id="imageShow" width="50%" height="50%">
+          </div>
+          <div class="mb-3">
+            <label for="formFile" class="form-label">Image </label>
+            <input class="form-control" name="image" type="file" id="edit-category-image" />
+          </div>
       </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary btnUpdate">Update</button>
+      </div>
+      </form>
     </div>
   </div>
-  {% load static %}
-    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-    {% comment %} <script src="{% static 'js/category.js' %}"></script> {% endcomment %}
-    <script>
-      $(function(){
+</div>
 
-      
+<!-- delete Group modal -->
 
-        $('#addCategoryForm').on('submit', function(event) {
-          event.preventDefault();
-          
-          $.ajax({
-              url: $("#addCategoryForm").attr('action'),
-              type: 'POST',
-              data: new FormData(this),
-              processData: false,
-              contentType: false,
-              headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-              },
-              success: function(response) {
-                toastr.success(response.message);
-                $("#addCategoryModal").modal('hide');
-                $("#addCategoryForm").trigger('reset');
-                $("#name-field").removeClass('is-invalid');
-                $("#group-field").removeClass('is-invalid');
-                $(".name-error-message").text("");
-                $(".group-error-message").text("");
-                $(".invalid-feedback").text("");
-                setTimeout(function(){
-                  location.reload();
-                }, 1000);
-              },
-              error: function(error) {
-                console.log(error);
-                if(error.responseJSON.name != '') {
-                  $("#name-field").addClass('is-invalid');
-                  $(".name-error-message").text(error.responseJSON.name);
-                }
-                if(error.responseJSON.group_id != '') {
-                  $("#group-field").addClass('is-invalid');
-                  $(".group-error-message").text(error.responseJSON.group_id);
-                }
-              }
-          });
+<!-- Modal HTML -->
+<div id="deleteCategoryModal" class="modal fade">
+  <div class="modal-dialog modal-confirm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <div class="icon-box">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </div> -->
+        <h4 class="modal-title">Are you sure?</h4>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form action="{% url 'deleteCategory' %}" method="POST" id="deleteCategoryForm">
+
+        {% csrf_token %}
+        <input type="hidden" id="delete-category-id" name="delete_id">
+
+      <div class="modal-body">
+        <p>Do you really want to delete these records? This process cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger btnDelete">Delete</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+                      <div
+                        class="bs-toast toast fade show bg-success category-toast d-none"
+                        role="alert"
+                        aria-live="assertive"
+                        aria-atomic="true"
+                      >
+                        <div class="toast-header">
+                          <i class="bx bx-bell me-2"></i>
+                          <div class="me-auto fw-semibold toast-title">Bootstrap</div>
+                          {% comment %} <small>11 mins ago</small> {% endcomment %}
+                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                          
+                        </div>
+                      </div>
+
+{% load static %}
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+  <script>
+    $(function(){
+
+      $(document).on("change", "#image-field", function(){
+        const file = this.files[0];
+
+        // Check if a file is selected
+        if (file) {
+            // Create a FileReader
+            const reader = new FileReader();
+  
+            // Set up the FileReader to read the file as a data URL
+            reader.readAsDataURL(file);
+  
+            // Define what to do once the file is loaded
+            reader.onload = function(e) {
+                // Display the image preview
+                $("#addImageShow").attr("src", e.target.result);
+            };
+        }
       });
-        
-        $("#categoriesTable").on('click', '.editCategoryBtn', function() {
-          let id = $(this).data("id");
-          let name = $(this).data("name");
-          let group_id = $(this).data("group-id");
-          let image = $(this).data("image");
-        
-          $("#edit-category-id").val(id);
-          $("#edit-category-name").val(name);
-          $("#edit-category-group-id").val(group_id).trigger("change");
-          if(image == "") {
-            $("#imageShow").attr("src", "{% static 'images/userImage.png' %}").attr("alt", alt);
-          }
-          $("#edit-category-image").attr("src", image);
-          $("#imageShow").attr("src", "/media/"+image).attr("alt", alt);
-        
-        });
 
-        $("#editCategoryForm").on('submit', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#editCategoryForm").attr('action'),
-            type: "POST",
+      $(document).on("change", "#edit-category-image", function(){
+        const file = this.files[0];
+
+        // Check if a file is selected
+        if (file) {
+            // Create a FileReader
+            const reader = new FileReader();
+  
+            // Set up the FileReader to read the file as a data URL
+            reader.readAsDataURL(file);
+  
+            // Define what to do once the file is loaded
+            reader.onload = function(e) {
+                // Display the image preview
+                $("#imageShow").attr("src", e.target.result);
+            };
+        }
+      });
+
+      $('#addCategoryForm').on('submit', function(event) {
+        event.preventDefault();
+        
+        $.ajax({
+            url: $("#addCategoryForm").attr('action'),
+            type: 'POST',
             data: new FormData(this),
             processData: false,
             contentType: false,
@@ -349,57 +299,112 @@
             },
             success: function(response) {
               toastr.success(response.message);
-              $("#editCategoryModal").modal('hide');
-              $("#editCategoryForm").trigger('reset');
-              $("#edit-category-name").removeClass('is-invalid');
-              $("#edit-category-group-id").removeClass('is-invalid');
-              $(".edit-name-error-message").text("");
-              $(".edit-group-error-message").text("");
+              $("#addCategoryModal").modal('hide');
+              $("#addCategoryForm").trigger('reset');
+              $("#name-field").removeClass('is-invalid');
+              $("#group-field").removeClass('is-invalid');
+              $(".name-error-message").text("");
+              $(".group-error-message").text("");
               $(".invalid-feedback").text("");
               setTimeout(function(){
                 location.reload();
-              }, 1000);
+              }, 2000);
             },
             error: function(error) {
+              console.log(error);
               if(error.responseJSON.name != '') {
-                $("#edit-category-name").addClass('is-invalid');
-                $(".edit-name-error-message").text(error.responseJSON.name);
+                $("#name-field").addClass('is-invalid');
+                $(".name-error-message").text(error.responseJSON.name);
               }
               if(error.responseJSON.group_id != '') {
-                $("#edit-category-group-id").addClass('is-invalid');
-                $(".edit-group-error-message").text(error.responseJSON.group_id);
+                $("#group-field").addClass('is-invalid');
+                $(".group-error-message").text(error.responseJSON.group_id);
               }
             }
-          });
         });
-
-        $("#categoriesTable").on('click', '.deleteCategoryBtn', function() {
-          let id = $(this).data("id");
-          $("#delete-category-id").val(id);
-        });
-
-        $("#deleteCategoryForm").on('click', '.btnDelete', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#deleteCategoryForm").attr('action'),
-            type: "POST",
-            data: $("#deleteCategoryForm").serialize(),
-
-            success: function(response) {
-              toastr.success(response.message);
-              $("#deleteCategoryModal").modal('hide');
-              setTimeout(function(){
-                location.reload();
-              }, 1000);
-            },
-            error: function(error) {
-              
-            }
-          });
-        });
-
+    });
+      
+      $("#categoriesTable").on('click', '.editCategoryBtn', function() {
+        let id = $(this).data("id");
+        let name = $(this).data("name");
+        let group_id = $(this).data("group-id");
+        let image = $(this).data("image");
+      
+        $("#edit-category-id").val(id);
+        $("#edit-category-name").val(name);
+        $("#edit-category-group-id").val(group_id).trigger("change");
+        if(image == "") {
+          $("#imageShow").attr("src", "{% static 'images/default-image.jpg' %}").attr("alt", alt);
+        }
+        $("#edit-category-image").attr("src", image);
+        $("#imageShow").attr("src", "/media/"+image).attr("alt", alt);
+      
       });
 
-    </script>
-  {% endblock %}
+      $("#editCategoryForm").on('submit', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+          url: $("#editCategoryForm").attr('action'),
+          type: "POST",
+          data: new FormData(this),
+          processData: false,
+          contentType: false,
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function(response) {
+            toastr.success(response.message);
+            $("#editCategoryModal").modal('hide');
+            $("#editCategoryForm").trigger('reset');
+            $("#edit-category-name").removeClass('is-invalid');
+            $("#edit-category-group-id").removeClass('is-invalid');
+            $(".edit-name-error-message").text("");
+            $(".edit-group-error-message").text("");
+            $(".invalid-feedback").text("");
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            if(error.responseJSON.name != '') {
+              $("#edit-category-name").addClass('is-invalid');
+              $(".edit-name-error-message").text(error.responseJSON.name);
+            }
+            if(error.responseJSON.group_id != '') {
+              $("#edit-category-group-id").addClass('is-invalid');
+              $(".edit-group-error-message").text(error.responseJSON.group_id);
+            }
+          }
+        });
+      });
+
+      $("#categoriesTable").on('click', '.deleteCategoryBtn', function() {
+        let id = $(this).data("id");
+        $("#delete-category-id").val(id);
+      });
+
+      $("#deleteCategoryForm").on('click', '.btnDelete', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+          url: $("#deleteCategoryForm").attr('action'),
+          type: "POST",
+          data: $("#deleteCategoryForm").serialize(),
+
+          success: function(response) {
+            toastr.success(response.message);
+            $("#deleteCategoryModal").modal('hide');
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            
+          }
+        });
+      });
+
+    });
+  </script>
+{% endblock %}

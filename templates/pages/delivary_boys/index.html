@@ -1,104 +1,57 @@
 {% extends 'layouts/main.html' %}
+
 {% block 'content' %}
-    <!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0">Delivary Boys</h1>
-        </div><!-- /.col -->
-        <div class="col-sm-6">
-          {% comment %} <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard v2</li>
-          </ol> {% endcomment %}
-        </div><!-- /.col -->
-      </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </div>
-  <!-- /.content-header -->
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Delivary Boys</h4>
 
-  <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
-      <!-- Info boxes -->
-      {% comment %} {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
-          <strong>{{message}}</strong>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      {% endfor %}
-      {% endif %} {% endcomment %}
-      <div class="card">
-        <div class="card-header">
-            <a href="#" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#addDelivaryBoyModal">+ Add</a>
-        </div>
-        <div class="card-body">
-          
-          <table class="table table-striped" id="delivaryBoysTable">
-            <thead>
-              <tr>
-                <th>NO</th>
-                <th>Profile</th>
-                <th>Name</th>
-                <th>Place</th>
-                <th>Mobile No</th>
-                <th></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {% if delivaryBoysCount > 0 %}
+  <!-- Basic Bootstrap Table -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between">
+      <h4 class="d-flex justify-content-start">Delivary Boys</h4>
+      <a href="#" class="btn btn-primary d-flex justify-content-end" data-bs-toggle="modal" data-bs-target="#addDelivaryBoyModal">+ Add</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+      <table class="table" id="delivaryBoysTable">
+        <thead class="table-light">
+          <tr>
+            <th>NO</th>
+            <th>Profile</th>
+            <th>Fullname</th>
+            <th>Username</th>
+            <th>Place</th>
+            <th>Mobile No</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          {% if delivaryBoysCount > 0 %}
               {% for b in page_obj %}
               
               <tr>
                 <td>{{ forloop.counter }}</td>
                 {% load static %}
-                <td>{% if b.photo != "" %}<img src="/media/{{ b.photo }}" height="30" width="30">{% else %}<img src="{% static 'images/userImage.png' %}" height="30" width="30"> {% endif %}</td>
+                <td>{% if b.photo != "" %}<img src="/media/{{ b.photo }}" height="50" width="50">{% else %}<img src="{% static 'images/userImage.png' %}" height="30" width="30"> {% endif %}</td>
                 <td>{{ b.name }}</td>
+                <td>{{ b.username }}</td>
                 <td>{{ b.place }}</td>
                 <td>{{ b.mobile_no }}</td>
                 <td class="float-right">
-                  <a data-toggle="modal" data-id="{{ b.id }}" data-name="{{ b.name }}" data-photo="{{ b.photo }}" data-place="{{ b.place }}" data-mobile-no="{{ b.mobile_no }}" data-target="#editDelivaryBoyModal" href='#' class="btn btn-warning btn-sm editDelivaryBoyBtn"><i class="fa fa-edit"></i></a> 
-                  <a data-toggle="modal" data-id="{{ b.id }}" data-target="#deleteDelivaryBoyModal" href='#' class="btn btn-danger btn-sm deleteDelivaryBoyBtn"><i class="fa fa-trash"></i></a>
+                  <a data-bs-toggle="modal" data-id="{{ b.id }}" data-name="{{ b.name }}" data-photo="{{ b.photo }}" data-place="{{ b.place }}" data-mobile-no="{{ b.mobile_no }}" data-bs-target="#editDelivaryBoyModal" href='#' class="btn btn-warning btn-sm editDelivaryBoyBtn"><i class="fa fa-edit"></i></a> 
+                  <a data-bs-toggle="modal" data-id="{{ b.id }}" data-bs-target="#deleteDelivaryBoyModal" href='#' class="btn btn-danger btn-sm deleteDelivaryBoyBtn"><i class="fa fa-trash"></i></a>
                 </td>
               </tr>
               {% endfor %}
               {% else %}
               <tr>
-                <td class="text-center" colspan="6">No data available in table</td>
+                <td class="text-center" colspan="7">No data available in table</td>
                
               </tr>
               {% endif %}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="5">
-                  <div class="pagination">
-                    {% comment %} {% if page_obj.has_previous %}
-                        <a class="btn btn-default btn-sm paginationBtn" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                    {% endif %}
-                    {% for num in page_obj.paginator.page_range %}
-                    {% if num == page_obj.number %}
-                        <a class="btn btn-default btn-sm paginationBtn ml-1 active">{{ num }}</a>
-                    {% else %}
-                        <a href="?page={{ num }}" class="btn btn-default btn-sm paginationBtn ml-1">{{ num }}</a>
-                    {% endif %}
-                    {% endfor %}
-                    {% if page_obj.has_next %}
-                        <a class="btn btn-default btn-sm paginationBtn ml-1" href="?page={{ num }}">Next</a>
-                    {% endif %} {% endcomment %}
-                </div>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-        <div class="card-footer">
-          {% if page_obj and page_obj.has_next or page_obj.has_previous %}
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer d-flex justify-content-end">
+      {% if page_obj and page_obj.has_next or page_obj.has_previous %}
           <div class="pl-2">
             <nav aria-label="Page navigation example ml-5">
               <ul class="pagination float-right">
@@ -136,249 +89,237 @@
           </div>
           {% endif %}
         </div>
-      </div>
-      <!-- /.row -->
-    </div><!--/. container-fluid -->
-  </section>
-  <!-- /.content -->
-
-  <div class="modal fade" id="addDelivaryBoyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Delivary Boy</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form id="addDelivaryBoyForm" action="{% url 'addDelivaryBoy' %}" method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-        <div class="modal-body">
-            <div class="form-group">
-                <label>Name <strong class="text-danger">*</strong></label>
-                <input type="text" name="name" class="form-control" id="name-field">
-                <span class="invalid-feedback name-error-message"></span>
-            </div>
-    
-            <div class="form-group">
-              <label>Photo </label>
-              
-              <div class="custom-file">
-                <input type="file" name="photo" class="custom-file-input" id="photo-field">
-                <label class="custom-file-label">Choose file</label>
-              </div>
-            </div>
-
-            <div class="form-group">
-                <label>Place <strong class="text-danger">*</strong></label>
-                <input type="text" name="place" class="form-control" id="place-field">
-                <span class="invalid-feedback place-error-message"></span>
-            </div>
-
-            <div class="form-group">
-                <label>Mobile No <strong class="text-danger">*</strong></label>
-                <input type="text" name="mobile_no" class="form-control" id="mobile-no-field">
-                <span class="invalid-feedback mobile-no-error-message"></span>
-            </div>
-
-            <div class="form-group">
-                <label>Password <strong class="text-danger">*</strong></label>
-                <input type="password" name="password" class="form-control" id="password-field">
-                <span class="invalid-feedback password-error-message"></span>
-            </div>
-
-            <div class="form-group">
-                <label>Confirm Password <strong class="text-danger">*</strong></label>
-                <input type="password" name="confirm_password" class="form-control" id="confirm-password-field">
-                <span class="invalid-feedback password-error-message"></span>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary btnSave">Save</button>
-        </div>
-        </form>
-      </div>
-    </div>
   </div>
+</div>
+
+<!-- Add Group Modal -->
+<div class="modal fade" id="addDelivaryBoyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Delivary Boy</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form id="addDelivaryBoyForm" action="{% url 'addDelivaryBoy' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+      <div class="modal-body">
+        <div id="photoShowDiv" class="text-center">
+          <img id="picShow" width="50%" height="50%">
+        </div>
+          <div class="mb-3">
+              <label>Name <strong class="text-danger">*</strong></label>
+              <input type="text" name="name" class="form-control" id="name-field">
+              <span class="invalid-feedback name-error-message"></span>
+          </div>
   
+          <div class="mb-3">
+            <label for="formFile" class="form-label">Photo </label>
+            <input class="form-control" name="photo" type="file" id="photo-field" />
+          </div>
 
-   <!-- Edit Group Modal -->
+          <div class="mb-3">
+            <label>Username <strong class="text-danger">*</strong></label>
+            <input type="text" name="username" class="form-control" id="username-field">
+            <span class="invalid-feedback username-error-message"></span>
+          </div>
 
-   <div class="modal fade" id="editDelivaryBoyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit Delivary Boy</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="{% url 'editDelivaryBoy' %}" method="POST" enctype="multipart/form-data" id="editDelivaryBoyForm">
-          {% csrf_token %}
-          <input type="hidden" id="edit-delivary-boy-id" name="edit_id">
-          <div class="modal-body">
-            <div id="photoShowDiv" class="text-center">
-                <img id="photoShow" width="200" height="200">
-            </div>
-            <div class="form-group">
-                <label>Name <strong class="text-danger">*</strong></label>
-                <input type="text" name="name" class="form-control" id="edit-name-field">
-                <span class="invalid-feedback edit-name-error-message"></span>
-            </div>
-            <div class="form-group">
-              <label>Photo </label>
-              
-              <div class="custom-file">
-                <input type="file" name="photo" class="custom-file-input" id="edit-photo-field">
-                <label class="custom-file-label">Choose file</label>
-              </div>
-            </div>
+          <div class="mb-3">
+              <label>Place <strong class="text-danger">*</strong></label>
+              <input type="text" name="place" class="form-control" id="place-field">
+              <span class="invalid-feedback place-error-message"></span>
+          </div>
 
-            <div class="form-group">
-                <label>Place <strong class="text-danger">*</strong></label>
-                <input type="text" name="place" class="form-control" id="edit-place-field">
-                <span class="invalid-feedback edit-place-error-message"></span>
-            </div>
+          <div class="mb-3">
+              <label>Mobile No <strong class="text-danger">*</strong></label>
+              <input type="text" name="mobile_no" class="form-control" id="mobile-no-field">
+              <span class="invalid-feedback mobile-no-error-message"></span>
+          </div>
 
-            <div class="form-group">
-                <label>Mobile No <strong class="text-danger">*</strong></label>
-                <input type="text" name="mobile_no" class="form-control" id="edit-mobile-no-field">
-                <span class="invalid-feedback edit-mobile-no-error-message"></span>
-            </div>
+          <div class="mb-3">
+              <label>Password <strong class="text-danger">*</strong></label>
+              <input type="password" name="password" class="form-control" id="password-field">
+              <span class="invalid-feedback password-error-message"></span>
+          </div>
 
-        
-        </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary btnUpdate">Update</button>
-        </div>
-        </form>
+          <div class="mb-3">
+              <label>Confirm Password <strong class="text-danger">*</strong></label>
+              <input type="password" name="confirm_password" class="form-control" id="confirm-password-field">
+              <span class="invalid-feedback password-error-message"></span>
+          </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary btnSave">Save</button>
+      </div>
+      </form>
     </div>
   </div>
+</div>
 
-  <!-- delete Group modal -->
 
-  <!-- Modal HTML -->
-  <div id="deleteDelivaryBoyModal" class="modal fade">
-    <div class="modal-dialog modal-confirm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <!-- <div class="icon-box">
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </div> -->
-          <h4 class="modal-title">Are you sure?</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        </div>
+ <!-- Edit Group Modal -->
 
-        <form action="{% url 'deleteDelivaryBoy' %}" method="POST" id="deleteDelivaryBoyForm">
-
-          {% csrf_token %}
-          <input type="hidden" id="delete-delivary-boy-id" name="delete_id">
-
+ <div class="modal fade" id="editDelivaryBoyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Delivary Boy</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form action="{% url 'editDelivaryBoy' %}" method="POST" enctype="multipart/form-data" id="editDelivaryBoyForm">
+        {% csrf_token %}
+        <input type="hidden" id="edit-delivary-boy-id" name="edit_id">
         <div class="modal-body">
-          <p>Do you really want to delete these records? This process cannot be undone.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger btnDelete">Delete</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  {% load static %}
-    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-    
-    {% comment %} <script src="{% static 'js/category.js' %}"></script> {% endcomment %}
-    <script>
-      $(function(){
+          <div id="photoShowDiv" class="text-center">
+              <img id="photoShow" width="50%" height="50%">
+          </div>
+          <div class="mb-3">
+              <label>Name <strong class="text-danger">*</strong></label>
+              <input type="text" name="name" class="form-control" id="edit-name-field">
+              <span class="invalid-feedback edit-name-error-message"></span>
+          </div>
+          <div class="mb-3">
+            <label for="formFile" class="form-label">Photo </label>
+            <input class="form-control" name="photo" type="file" id="edit-photo-field" />
+          </div>
+
+          <div class="mb-3">
+              <label>Place <strong class="text-danger">*</strong></label>
+              <input type="text" name="place" class="form-control" id="edit-place-field">
+              <span class="invalid-feedback edit-place-error-message"></span>
+          </div>
+
+          <div class="mb-3">
+              <label>Mobile No <strong class="text-danger">*</strong></label>
+              <input type="text" name="mobile_no" class="form-control" id="edit-mobile-no-field">
+              <span class="invalid-feedback edit-mobile-no-error-message"></span>
+          </div>
 
       
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary btnUpdate">Update</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
 
-        $('#addDelivaryBoyForm').on('submit', function(event) {
-          event.preventDefault();
-          
-          $.ajax({
-              url: $("#addDelivaryBoyForm").attr('action'),
-              type: 'POST',
-              data: new FormData(this),
-              processData: false,
-              contentType: false,
-              headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-              },
-              success: function(response) {
-                toastr.success(response.message);
-                $("#addDelivaryBoyModal").modal('hide');
-                $("#addDelivaryBoyForm").trigger('reset');
-                $("#name-field").removeClass('is-invalid');
-                $("#place-field").removeClass('is-invalid');
-                $("#mobile-no-field").removeClass('is-invalid');
-                $("#password-field").removeClass('is-invalid');
+<!-- delete Group modal -->
 
-                $(".name-error-message").text("");
-                $(".place-error-message").text("");
-                $(".mobile-no-error-message").text("");
-                $(".password-field").text("");
-                $(".invalid-feedback").text("");
-                setTimeout(function(){
-                  location.reload();
-                }, 1000);
-              },
-              error: function(error) {
-                console.log(error);
-                if(error.responseJSON.name != '') {
-                    $("#name-field").addClass('is-invalid');
-                    $(".name-error-message").text(error.responseJSON.name);
-                }
+<!-- Modal HTML -->
+<div id="deleteDelivaryBoyModal" class="modal fade">
+  <div class="modal-dialog modal-dialog-centered modal-confirm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <div class="icon-box">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </div> -->
+        <h4 class="modal-title">Are you sure?</h4>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
 
-                if(error.responseJSON.place != '') {
-                    $("#place-field").addClass('is-invalid');
-                    $(".place-error-message").text(error.responseJSON.place);
-                }
+      <form action="{% url 'deleteDelivaryBoy' %}" method="POST" id="deleteDelivaryBoyForm">
 
-                if(error.responseJSON.mobile_no != '') {
-                    $("#mobile-no-field").addClass('is-invalid');
-                    $(".mobile-no-error-message").text(error.responseJSON.mobile_no);
-                }
+        {% csrf_token %}
+        <input type="hidden" id="delete-delivary-boy-id" name="delete_id">
 
-                if(error.responseJSON.password != '') {
-                    $("#password-field").addClass('is-invalid');
-                    $(".password-error-message").text(error.responseJSON.password);
-                }
+      <div class="modal-body">
+        <p>Do you really want to delete these records? This process cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger btnDelete">Delete</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
 
-              }
-          });
+                      <div
+                        class="bs-toast toast fade show bg-success category-toast d-none"
+                        role="alert"
+                        aria-live="assertive"
+                        aria-atomic="true"
+                      >
+                        <div class="toast-header">
+                          <i class="bx bx-bell me-2"></i>
+                          <div class="me-auto fw-semibold toast-title">Bootstrap</div>
+                          {% comment %} <small>11 mins ago</small> {% endcomment %}
+                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                          
+                        </div>
+                      </div>
+
+{% load static %}
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'assets/js/ajax.js' %}"></script>
+  <script>
+    $(function(){
+
+      $(document).on("change", "#photo-field", function(){
+        const file = this.files[0];
+
+        // Check if a file is selected
+        if (file) {
+            // Create a FileReader
+            const reader = new FileReader();
+  
+            // Set up the FileReader to read the file as a data URL
+            reader.readAsDataURL(file);
+  
+            // Define what to do once the file is loaded
+            reader.onload = function(e) {
+                // Display the image preview
+                $("#picShow").attr("src", e.target.result);
+            };
+        }
       });
-        
-        $("#delivaryBoysTable").on('click', '.editDelivaryBoyBtn', function() {
-          let id = $(this).data("id");
-          let name = $(this).data("name");
-          let photo = $(this).data("photo");
-          let place = $(this).data("place");
-          console.log(place);
-          let mobile_no = $(this).data("mobile-no");
-        
-          $("#edit-delivary-boy-id").val(id);
-          $("#edit-name-field").val(name);
-          $("#edit-place-field").val(place);
-          $("#edit-mobile-no-field").val(mobile_no);
-          if(photo == "") {
-            $("#photoShow").attr("src", "{% static 'images/userImage.png' %}").attr("alt", alt);
-          }
-          $("#edit-photo-field").attr("src", photo);
-          $("#photoShow").attr("src", "/media/"+photo);
-        });
 
-        $("#editDelivaryBoyForm").on('submit', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#editDelivaryBoyForm").attr('action'),
-            type: "POST",
+      $(document).on("change", "#edit-photo-field", function(){
+        const file = this.files[0];
+
+        // Check if a file is selected
+        if (file) {
+            // Create a FileReader
+            const reader = new FileReader();
+  
+            // Set up the FileReader to read the file as a data URL
+            reader.readAsDataURL(file);
+  
+            // Define what to do once the file is loaded
+            reader.onload = function(e) {
+                // Display the image preview
+                $("#photoShow").attr("src", e.target.result);
+            };
+        }
+      });
+
+      $('#addDelivaryBoyForm').on('submit', function(event) {
+        event.preventDefault();
+        
+        $.ajax({
+            url: $("#addDelivaryBoyForm").attr('action'),
+            type: 'POST',
             data: new FormData(this),
             processData: false,
             contentType: false,
@@ -387,64 +328,145 @@
             },
             success: function(response) {
               toastr.success(response.message);
-              $("#editDelivaryBoyModal").modal('hide');
-              $("#editDelivaryBoyForm").trigger('reset');
-              $("#edit-name-field").removeClass('is-invalid');
-              $("#edit-place-field").removeClass('is-invalid');
-              $("#edit-mobile-no-field").removeClass('is-invalid');
-              $("#edit--field").removeClass('is-invalid');
-              $(".edit-name-error-message").text("");
-              $(".edit-group-error-message").text("");
+              $("#addDelivaryBoyModal").modal('hide');
+              $("#addDelivaryBoyForm").trigger('reset');
+              $("#name-field").removeClass('is-invalid');
+              $("#place-field").removeClass('is-invalid');
+              $("#mobile-no-field").removeClass('is-invalid');
+              $("#username-field").removeClass('is-invalid');
+              $("#password-field").removeClass('is-invalid');
+
+              $(".name-error-message").text("");
+              $(".place-error-message").text("");
+              $(".mobile-no-error-message").text("");
+              $(".username-error-message").text("");
+              $(".password-field").text("");
               $(".invalid-feedback").text("");
               setTimeout(function(){
                 location.reload();
               }, 1000);
             },
             error: function(error) {
+              console.log(error);
               if(error.responseJSON.name != '') {
-                $("#edit-name-field").addClass('is-invalid');
-                $(".edit-name-error-message").text(error.responseJSON.name);
+                  $("#name-field").addClass('is-invalid');
+                  $(".name-error-message").text(error.responseJSON.name);
               }
+
               if(error.responseJSON.place != '') {
-                $("#edit-place-field").addClass('is-invalid');
-                $(".edit-place-error-message").text(error.responseJSON.place);
+                  $("#place-field").addClass('is-invalid');
+                  $(".place-error-message").text(error.responseJSON.place);
               }
+
               if(error.responseJSON.mobile_no != '') {
-                $("#edit-mobile-no-field").addClass('is-invalid');
-                $(".edit-mobile-no-error-message").text(error.responseJSON.mobile_no);
+                  $("#mobile-no-field").addClass('is-invalid');
+                  $(".mobile-no-error-message").text(error.responseJSON.mobile_no);
               }
-              
+
+              if(error.responseJSON.username != '') {
+                $("#username-field").addClass('is-invalid');
+                $(".username-error-message").text(error.responseJSON.username);
+              }
+
+              if(error.responseJSON.password != '') {
+                  $("#password-field").addClass('is-invalid');
+                  $(".password-error-message").text(error.responseJSON.password);
+              }
+
             }
-          });
         });
-
-        $("#delivaryBoysTable").on('click', '.deleteDelivaryBoyBtn', function() {
-          let id = $(this).data("id");
-          $("#delete-delivary-boy-id").val(id);
-        });
-
-        $("#deleteDelivaryBoyForm").on('click', '.btnDelete', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#deleteDelivaryBoyForm").attr('action'),
-            type: "POST",
-            data: $("#deleteDelivaryBoyForm").serialize(),
-
-            success: function(response) {
-              toastr.success(response.message);
-              $("#deleteDelivaryBoyModal").modal('hide');
-              setTimeout(function(){
-                location.reload();
-              }, 1000);
-            },
-            error: function(error) {
-              
-            }
-          });
-        });
-
+    });
+      
+      $("#delivaryBoysTable").on('click', '.editDelivaryBoyBtn', function() {
+        let id = $(this).data("id");
+        let name = $(this).data("name");
+        let photo = $(this).data("photo");
+        let place = $(this).data("place");
+        console.log(place);
+        let mobile_no = $(this).data("mobile-no");
+      
+        $("#edit-delivary-boy-id").val(id);
+        $("#edit-name-field").val(name);
+        $("#edit-place-field").val(place);
+        $("#edit-mobile-no-field").val(mobile_no);
+        if(photo == "") {
+          $("#photoShow").attr("src", "{% static 'images/userImage.png' %}").attr("alt", alt);
+        }
+        $("#edit-photo-field").attr("src", photo);
+        $("#photoShow").attr("src", "/media/"+photo);
       });
 
-    </script>
-  {% endblock %}
+      $("#editDelivaryBoyForm").on('submit', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+          url: $("#editDelivaryBoyForm").attr('action'),
+          type: "POST",
+          data: new FormData(this),
+          processData: false,
+          contentType: false,
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function(response) {
+            toastr.success(response.message);
+            $("#editDelivaryBoyModal").modal('hide');
+            $("#editDelivaryBoyForm").trigger('reset');
+            $("#edit-name-field").removeClass('is-invalid');
+            $("#edit-place-field").removeClass('is-invalid');
+            $("#edit-mobile-no-field").removeClass('is-invalid');
+            $("#edit--field").removeClass('is-invalid');
+            $(".edit-name-error-message").text("");
+            $(".edit-group-error-message").text("");
+            $(".invalid-feedback").text("");
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            if(error.responseJSON.name != '') {
+              $("#edit-name-field").addClass('is-invalid');
+              $(".edit-name-error-message").text(error.responseJSON.name);
+            }
+            if(error.responseJSON.place != '') {
+              $("#edit-place-field").addClass('is-invalid');
+              $(".edit-place-error-message").text(error.responseJSON.place);
+            }
+            if(error.responseJSON.mobile_no != '') {
+              $("#edit-mobile-no-field").addClass('is-invalid');
+              $(".edit-mobile-no-error-message").text(error.responseJSON.mobile_no);
+            }
+            
+          }
+        });
+      });
+
+      $("#delivaryBoysTable").on('click', '.deleteDelivaryBoyBtn', function() {
+        let id = $(this).data("id");
+        $("#delete-delivary-boy-id").val(id);
+      });
+
+      $("#deleteDelivaryBoyForm").on('click', '.btnDelete', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+          url: $("#deleteDelivaryBoyForm").attr('action'),
+          type: "POST",
+          data: $("#deleteDelivaryBoyForm").serialize(),
+
+          success: function(response) {
+            toastr.success(response.message);
+            $("#deleteDelivaryBoyModal").modal('hide');
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            
+          }
+        });
+      });
+
+    });
+  </script>
+{% endblock %}

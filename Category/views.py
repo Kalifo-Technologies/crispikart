@@ -55,7 +55,7 @@ def addCategory(request):
                     image = image
                 )
 
-                return JsonResponse({"message": "Category created successfully"})
+                return JsonResponse({"message": "Category created successfully"}, status=200)
             
         except ValidationError as e:
             return JsonResponse({'error': str(e)}, status=500)

@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
+from User.models import Roles
 import re
 
 def index(request):
 
     items_per_page = 10
+    roles = Roles.objects.all()
     users = User.objects.all()
     paginator = Paginator(users, items_per_page)
     page_number = request.GET.get('page')
@@ -17,6 +19,7 @@ def index(request):
     usersCount = User.objects.count()
 
     context = {
+        "roles": roles,
         "nums": nums,
         "page_obj": page_obj,
         "usersCount": usersCount,
@@ -34,15 +37,17 @@ def addUser(request):
             lastname = request.POST['last_name']
             username = request.POST['username']
             email = request.POST['email']
+            role = request.POST['role']
+            is_active = request.POST.get('is_active')
             password = request.POST['password']
             confirm_password = request.POST['confirm_password']
 
             errors = {}
 
             if not firstname:
-               errors['firstname'] = 'firstname field is required'
+               errors['first_name'] = 'firstname field is required'
             if not lastname:
-               errors['lastname'] = 'lastname field is required'
+               errors['last_name'] = 'lastname field is required'
             if not username:
                errors['username'] = 'username field is required'   
             if User.objects.filter(username=username).exists():
@@ -51,6 +56,8 @@ def addUser(request):
                errors['email'] = 'email field is required'
             if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
                errors['email'] = 'Invalid email address.'
+            if not role:
+                errors['role'] = 'role field is required'   
             if not password:
                 errors['password'] = 'password field is required'   
             if password != confirm_password:
@@ -58,12 +65,18 @@ def addUser(request):
         if errors:
             return JsonResponse(errors, status=400)
         
-        User.objects.create_user(
+        user = User.objects.create_user(
             first_name = firstname,
             last_name = lastname,
-            username=username, 
-            email=email, 
-            password=password
+            username = username, 
+            email = email, 
+            is_active = is_active,
+            password = password
+        )
+
+        Group.objects.create(
+            user_id = user,
+            group_id = role
         )
 
         return JsonResponse({"message": "User created successfully"})
@@ -81,47 +94,57 @@ def editUser(request):
             lastname = request.POST['last_name']
             username = request.POST['username']
             email = request.POST['email']
-            password = request.POST['password']
-            confirm_password = request.POST['confirm_password']
+            role = request.POST.get('role')
+            is_active = request.POST.get('is_active')
+            edit_id = request.POST['edit_id']
 
             errors = {}
 
             if not firstname:
-               errors['firstname'] = 'firstname field is required'
+               errors['first_name'] = 'firstname field is required'
             if not lastname:
-               errors['lastname'] = 'lastname field is required'
+               errors['last_name'] = 'lastname field is required'
             if not username:
                errors['username'] = 'username field is required'   
-            if User.objects.filter(username=username).exists():
+            if User.objects.filter(username=username).exclude(id = edit_id).exists():
                errors['username'] = 'username is already taken'   
             if not email:
                errors['email'] = 'email field is required'
             if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
                errors['email'] = 'Invalid email address.'
-            if not password:
-                errors['password'] = 'password field is required'   
-            if password != confirm_password:
-                errors['password'] = 'passwords do not match'      
+            if not role:
+               errors['role'] = 'role field is required'
+
         if errors:
             return JsonResponse(errors, status=400)
         
-        user = User.objects.get(id = id)
+        user = User.objects.get(id = edit_id)
+        user.first_name =  firstname
+        user.last_name = lastname
+        user.username = username
+        user.email = email
+        user.is_active = is_active
+        user.save()
 
-        return JsonResponse({"message": "User created successfully"})
+        group = Group.objects.get(user_id = user)
+        group.group_id = role
+        group.save()
+
+        return JsonResponse({"message": "User updated successfully"})
     
     except ValidationError as e:
         return JsonResponse({'error': str(e)}, status=500)
     
    
 
-def deleteGroup(request):
+def deleteUser(request):
     
     try:
-        g_id = request.POST.get('id')
-        group = Group.objects.get(id=g_id)
-        group.delete()
+        delete_id = request.POST.get('delete_id')
+        user = User.objects.get(id=delete_id)
+        user.delete()
 
-        return JsonResponse({"message": "Group deleted successfully"})
+        return JsonResponse({"message": "User deleted successfully"})
     except ValidationError as e:
         return JsonResponse({'error': str(e)}, status=500)    
     

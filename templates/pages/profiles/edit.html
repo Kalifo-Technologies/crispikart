@@ -1,4 +1,5 @@
 {% extends 'layouts/main.html' %}
+
 {% block 'content' %}
 <style>
   label {
@@ -49,292 +50,259 @@
 }
 
 </style>
-<!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0">Profile Setup</h1>
-        </div><!-- /.col -->
-        <div class="col-sm-6">
-          {% comment %} <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard v2</li>
-          </ol> {% endcomment %}
-        </div><!-- /.col -->
-      </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </div>
-  <!-- /.content-header -->
-  
-  <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
-      <!-- Info boxes -->
-      <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-              <form action="{% url 'updateProfile' profile.private_information.id %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-              <div class="card-header">
-                
-              </div>
-              <div class="card-body">
-                <div class="profile-picture-upload" style="margin-left: 42.5%;">
-                  <input type="file" name="profile_image" accept="image/*" id="id_picture" class="d-none">
-                  {% load static %}
-                  <label for="id_picture">
-                    {% if profile.private_information.profile != '' %}
-                      <img src="/media/{{ profile.private_information.profile }}" id="profile_image" width="100" height="100" style="border-radius: 50%;" alt="Choose Image"> 
-                    {% else %}
-                      <img src="{% static 'images/userImage.png' %}" id="profile_image" width="100" height="100" style="border-radius: 50%;">
-                    {% endif %}
-                  </label>
-              </div>
-                <div class="form-container">
-                  <div class="section">
-                    <div class="form-group">
-                      <label style="text-decoration: underline;">PRIVATE INFORMATION</label>
-                    </div>
-                  
-                    <div class="form-group">
-                      <label class="text-muted">Owner Name</label>
-                      <input type="text" name="owner_name" class="form-control {% if validation_errors.owner_name %} is-invalid {% endif %}" value="{{ profile.private_information.owner_name }}">
-                      {% if validation_errors.owner_name %}
-                          <span class="invalid-feedback">{{ validation_errors.owner_name }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Email</label>
-                      <input type="email" name="private_email" class="form-control {% if validation_errors.private_email %} is-invalid {% endif %}" value="{{ profile.private_information.email }}">
-                      {% if validation_errors.private_email %}
-                          <span class="invalid-feedback">{{ validation_errors.private_email }}</span>
-                      {% endif %}
-                    </div> 
-                    <div class="form-group">
-                      <label class="text-muted">Contact No</label>
-                      <input type="text" name="private_contact_no" class="form-control {% if validation_errors.private_contact_no %} is-invalid {% endif %}" value="{{ profile.private_information.contact_no }}">
-                      {% if validation_errors.private_contact_no %}
-                          <span class="invalid-feedback">{{ validation_errors.private_contact_no }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Whatsapp No</label>
-                      <input type="text" name="private_whatsapp_no" class="form-control {% if validation_errors.private_whatsapp_no %} is-invalid {% endif %}" value="{{ profile.private_information.whatsapp_no }}">
-                      {% if validation_errors.private_whatsapp_no %}
-                          <span class="invalid-feedback">{{ validation_errors.private_whatsapp_no }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Established Year</label>
-                      <input type="text" name="established_year" class="form-control {% if validation_errors.established_year %} is-invalid {% endif %}" value="{{ profile.private_information.established_year }}">
-                      {% if validation_errors.established_year %}
-                          <span class="invalid-feedback">{{ validation_errors.established_year }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">No of employees</label>
-                      <input type="number" name="no_of_employees" class="form-control {% if validation_errors.no_of_employees %} is-invalid {% endif %}" value="{{ profile.private_information.no_of_employees }}">
-                      {% if validation_errors.no_of_employees %}
-                          <span class="invalid-feedback">{{ validation_errors.no_of_employees }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Manager Name</label>
-                      <input type="text" name="manager_name" class="form-control {% if validation_errors.manager_name %} is-invalid {% endif %}" value="{{ profile.private_information.manager_name }}">
-                      {% if validation_errors.manager_name %}
-                          <span class="invalid-feedback">{{ validation_errors.manager_name }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Manager Contact No</label>
-                      <input type="text" name="manager_contact_no" class="form-control {% if validation_errors.manager_contact_no %} is-invalid {% endif %}" value="{{ profile.private_information.manager_contact_no }}">
-                      {% if validation_errors.manager_contact_no %}
-                          <span class="invalid-feedback">{{ validation_errors.manager_contact_no }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted" style="text-decoration: underline;">Payment Options</label>
-                      
-                      <br>
-                      {% if paymentOptions|length != 0 %}
-                      {% for p in paymentOptions %}
-                        <input type="checkbox" name="payment_options[]" {% if p.id != "" %} checked {% endif %} value="{{ p.name }}"> {{ p.name }}
-                        <br>
-                      {% endfor %}
-                      {% else %}
-                        <input type="checkbox" name="payment_options[]" value="COD"> COD
-                        <br>
-                        <input type="checkbox" name="payment_options[]" value="Online Payment"> Online Payment
-                        <br>
-                        <input type="checkbox" name="payment_options[]" value="Gpay"> Gpay
-                      {% endif %}
-                  
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted" style="text-decoration: underline;">Settlement</label>
-                      <br>
-                      <label class="text-muted">Type</label>
-                      <br>
-                      {% if settlementTypes|length != 0 %}
-                      {% for s in settlementTypes %}
-                        <input type="checkbox" name="settlement_types[]" {% if s.id != "" %} checked {% endif %} value="{{ s.name }}"> {{ s.name }}
-                        <br>
-                      {% endfor %}
-                      {% else %}
-                        <input type="checkbox" name="settlement_types[]" value="Daily"> Daily
-                        <br>
-                        <input type="checkbox" name="settlement_types[]" value="Weekly"> Weekly
-                        <br>
-                      {% endif %}
-                      <label class="text-muted">Mode</label>
-                      <br>
-                      {% if settlementModes|length != 0 %}
-                      {% for s in settlementModes %}
-                        <input type="checkbox" name="settlement_modes[]" {% if s.id != "" %} checked {% endif %} value="{{ s.name }}"> {{ s.name }}
-                        <br>
-                      {% endfor %}
-                      {% else %}
-                        <input type="checkbox" name="settlement_modes[]" value="Cash"> Cash
-                        <br>
-                        <input type="checkbox" name="settlement_modes[]" value="Transfer"> Transfer
-                      {% endif %}
-                      
-                    </div>
-                </div>
-                <div class="vertical-line"></div>
-                <div class="section">
-                  
+
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Edit Restaurant</h4>
+
+  <!-- Basic Layout -->
+  <div class="row">
+    <div class="col-xl">
+      <div class="card mb-4">
+        {% comment %} <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Basic Layout</h5>
+          <small class="text-muted float-end">Default label</small>
+        </div> {% endcomment %}
+        <div class="card-body">
+          <form action="{% url 'updateProfile' profile.private_information.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
           
-                    <div class="form-group">
-                      <label style="text-decoration: underline;">PUBLIC INFORMATION</label>
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Restorant Name</label>
-                      <input type="text" name="restorant_name" class="form-control {% if validation_errors.restorant_name %} is-invalid {% endif %}" value="{{ profile.restorant_name }}">
-                      {% if validation_errors.restorant_name %}
-                          <span class="invalid-feedback">{{ validation_errors.restorant_name }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Images</label>
-                      <div class="custom-file">
-                        <input type="file" multiple="multiple" class="custom-file-input" id="imageUpload" name="restorant_images[]" accept="image/*">
-                        <label class="custom-file-label" for="imageUpload">Choose File</label>
+          <div class="card-body">
+            <div class="profile-picture-upload" style="margin-left: 42.5%;">
+              <input type="file" name="profile_image" accept="image/*" id="id_picture" class="d-none">
+              {% load static %}
+              <label for="id_picture">
+                {% if profile.private_information.profile != '' %}
+                  <img src="/media/{{ profile.private_information.profile }}" id="profile_image" width="100" height="100" style="border-radius: 50%;" alt="Choose Image"> 
+                {% else %}
+                  <img src="{% static 'images/userImage.png' %}" id="profile_image" width="100" height="100" style="border-radius: 50%;">
+                {% endif %}
+              </label>
+          </div>
+          <label class="d-flex justify-content-center mt-2">UPLOAD PROFILE</label>
+            <div class="form-container">
+              <div class="section">
+                <div class="mb-3">
+                  <label style="text-decoration: underline;">PRIVATE INFORMATION</label>
+                </div>
+              
+                <div class="mb-3">
+                  <label class="text-muted">Owner Name</label>
+                  <input type="text" name="owner_name" class="form-control {% if validation_errors.owner_name %} is-invalid {% endif %}" value="{{ profile.private_information.owner_name }}">
+                  {% if validation_errors.owner_name %}
+                      <span class="invalid-feedback">{{ validation_errors.owner_name }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Email</label>
+                  <input type="email" name="private_email" class="form-control {% if validation_errors.private_email %} is-invalid {% endif %}" value="{{ profile.private_information.email }}">
+                  {% if validation_errors.private_email %}
+                      <span class="invalid-feedback">{{ validation_errors.private_email }}</span>
+                  {% endif %}
+                </div> 
+                <div class="mb-3">
+                  <label class="text-muted">Contact No</label>
+                  <input type="text" name="private_contact_no" class="form-control {% if validation_errors.private_contact_no %} is-invalid {% endif %}" value="{{ profile.private_information.contact_no }}">
+                  {% if validation_errors.private_contact_no %}
+                      <span class="invalid-feedback">{{ validation_errors.private_contact_no }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Whatsapp No</label>
+                  <input type="text" name="private_whatsapp_no" class="form-control {% if validation_errors.private_whatsapp_no %} is-invalid {% endif %}" value="{{ profile.private_information.whatsapp_no }}">
+                  {% if validation_errors.private_whatsapp_no %}
+                      <span class="invalid-feedback">{{ validation_errors.private_whatsapp_no }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Established Year</label>
+                  <input type="text" name="established_year" class="form-control {% if validation_errors.established_year %} is-invalid {% endif %}" value="{{ profile.private_information.established_year }}">
+                  {% if validation_errors.established_year %}
+                      <span class="invalid-feedback">{{ validation_errors.established_year }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">No of employees</label>
+                  <input type="number" name="no_of_employees" class="form-control {% if validation_errors.no_of_employees %} is-invalid {% endif %}" value="{{ profile.private_information.no_of_employees }}">
+                  {% if validation_errors.no_of_employees %}
+                      <span class="invalid-feedback">{{ validation_errors.no_of_employees }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Manager Name</label>
+                  <input type="text" name="manager_name" class="form-control {% if validation_errors.manager_name %} is-invalid {% endif %}" value="{{ profile.private_information.manager_name }}">
+                  {% if validation_errors.manager_name %}
+                      <span class="invalid-feedback">{{ validation_errors.manager_name }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Manager Contact No</label>
+                  <input type="text" name="manager_contact_no" class="form-control {% if validation_errors.manager_contact_no %} is-invalid {% endif %}" value="{{ profile.private_information.manager_contact_no }}">
+                  {% if validation_errors.manager_contact_no %}
+                      <span class="invalid-feedback">{{ validation_errors.manager_contact_no }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted" style="text-decoration: underline;">Payment Options</label>
+                  {% for po in payment_options %}
+                    <br>
+                    <input type="checkbox" name="payment_options[]" {% for payOp in paymentOptions %} {% if payOp.payment_option == po.id %} checked {% endif %} {% endfor %} value="{{ po.id }}"> {{ po.name }}
+                  {% endfor %}  
+                  
+              
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted" style="text-decoration: underline;">Settlement</label>
+                  <br>
+                  <label class="text-muted" style="text-decoration: underline;">Type</label>
+                  {% for st in settlement_types %}  
+                    <br>
+                    <input type="checkbox" name="settlement_types[]" {% for stype in settlementTypes %} {% if stype.settlement_type == st.id %} checked {% endif %} {% endfor %} value="{{ st.id }}"> {{ st.name }}
+                  {% endfor %}  
+                    <br>
+                  
+                  <label class="text-muted" style="text-decoration: underline;">Mode</label>
+                  {% for sm in settlement_modes %}  
+                    <br>
+                    <input type="checkbox" name="settlement_modes[]" {% for smode in settlementModes %} {% if smode.settlement_mode == sm.id %} checked {% endif %} {% endfor %}  value="{{ sm.id }}"> {{ sm.name }}
+                  {% endfor %}  
+                  
+              
+                  
+                </div>
+            </div>
+            <div class="vertical-line"></div>
+            <div class="section">
+              
+      
+                <div class="mb-3">
+                  <label style="text-decoration: underline;">PUBLIC INFORMATION</label>
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Restorant Name</label>
+                  <input type="text" name="restorant_name" class="form-control {% if validation_errors.restorant_name %} is-invalid {% endif %}" value="{{ profile.restorant_name }}">
+                  {% if validation_errors.restorant_name %}
+                      <span class="invalid-feedback">{{ validation_errors.restorant_name }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label for="formFileMultiple" class="form-label text-muted">Upload Photos</label>
+                  <input class="form-control" type="file" name="restorant_images[]" id="imageUpload" multiple accept="image/*" />
+                </div> 
+                
+                {% if restorantFirstImage.images != "" and restorant_images|length != 0 %}
+                <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                  
+                  <div class="carousel-inner">
+                    <div class="carousel-item active">
+                      <img class="d-block w-100" src="/media/{{ restorantFirstImage.images }}" alt="First slide" />
+                      <div class="carousel-caption d-none d-md-block">
+                        
                       </div>
-                    </div> 
-                    {% if restorantFirstImage.images != "" and restorant_images|length != 0 %}
-                    <div id="carouselExampleControls" class="carousel slide bg-light" style="margin-left: auto; margin-" data-ride="carousel">
-                      <div class="carousel-inner">
-                        <div class="carousel-item active">
-                          <input type="hidden" name="editRestorantImagesField[]" value="{{ restorantFirstImage.images }}">
-                          <img class="d-block w-100" src="/media/{{ restorantFirstImage.images }}" alt="First slide">
-                        </div>
-                       
-                        {% for ri in restorant_images %}
-                        {% if restorantFirstImage.id != ri.id %}
-                        <div class="carousel-item">
-                          <input type="hidden" name="editRestorantImagesField[]" value="{{ ri.images }}">
-                          <img class="d-block w-100" src="/media/{{ ri.images }}" alt="Second slide">
-                        </div>
-                        {% endif %}
-                        {% endfor %}
-                        {% comment %} <div class="carousel-item">
-                          <img class="d-block w-100" src="..." alt="Third slide">
-                        </div> {% endcomment %}
+                    </div>
+                    {% for ri in restorant_images %}
+                    {% if restorantFirstImage.id != ri.id %}
+                    <div class="carousel-item">
+                      <img class="d-block w-100" src="/media/{{ ri.images }}" alt="Second slide" />
+                      <div class="carousel-caption d-none d-md-block">
+                        
                       </div>
-                      
-                      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                      </a>
-                      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                      </a>
                     </div>
                     {% endif %}
-                    <div class="form-group">
-                      <label class="text-muted">Address</label>
-                      <textarea type="textarea" name="address" class="form-control">{{ profile.address }}</textarea>
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Location</label>
-                      {% comment %} <input type="text" name="whatsapp_no" class="form-control"> {% endcomment %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Working Time</label>
-                      <br>
-                      {% if workingTimeDetails|length != 0 %}
-                      {% for wd in workingTimeDetails %}
-                        <input type="checkbox" name="working_times[]" {% if wd.id != "" %} checked {% endif %} value="{{ wd.working_time }}"> {{ wd.working_time }}
-                        <br>
-                      {% endfor %}
-                      {% else %}
-                        <input type="checkbox" name="working_times[]" value="Hotel Available Time"> Hotel Available Time
-                        <br>
-                        <input type="checkbox" name="working_times[]" value="Breakfast Time"> Breakfast Time
-                        <br>
-                        <input type="checkbox" name="working_times[]" value="Lunch Time"> Lunch Time
-                        <br>
-                        <input type="checkbox" name="working_times[]" value="Dinner Time"> Dinner Time
-                      {% endif %}
-                      {% comment %} <input type="checkbox" name="working_times[]" value="Hotel Available Time"> Hotel Available Time
-                      <br>
-                      <input type="checkbox" name="working_times[]" value="Breakfast Time"> Breakfast Time
-                      <br>
-                      <input type="checkbox" name="working_times[]" value="Lunch Time"> Lunch Time
-                      <br>
-                      <input type="checkbox" name="working_times[]" value="Dinner Time"> Dinner Time {% endcomment %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Order Options</label>
-                      <br>
-                      {% if orderOptions|length != 0 %}
-                      {% for os in orderOptions %}
-                        <input type="checkbox" name="order_options[]" {% if os.id != '' %} checked {% endif %} value="{{ os.name }}"> {{ os.name }}
-                        <br>
-                      {% endfor %}
-                      {% else %}
-                        <input type="checkbox" name="order_options[]" value="Pick Up"> Pick Up
-                        <br>
-                        <input type="checkbox" name="order_options[]" value="Delivary"> Delivary
-                      {% endif %}
-                      {% comment %} <input type="checkbox" name="order_options[]" value="Delivary"> Delivary {% endcomment %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Contact No</label>
-                      <input type="text" name="public_contact_no" class="form-control {% if validation_errors.public_contact_no %} is-invalid {% endif %}" value="{{ profile.contact_no }}">
-                      {% if validation_errors.public_contact_no %}
-                          <span class="invalid-feedback">{{ validation_errors.public_contact_no }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Whatsapp No</label>
-                      <input type="text" name="public_whatsapp_no" class="form-control {% if validation_errors.public_whatsapp_no %} is-invalid {% endif %}" value="{{ profile.whatsapp_no }}">
-                      {% if validation_errors.public_whatsapp_no %}
-                          <span class="invalid-feedback">{{ validation_errors.public_whatsapp_no }}</span>
-                      {% endif %}
-                    </div>
-                    <div class="form-group">
-                      <label class="text-muted">Email</label>
-                      <input type="email" name="restorant_email" class="form-control {% if validation_errors.restorant_email %} is-invalid {% endif %}" value="{{ profile.email }}">
-                      {% if validation_errors.restorant_email %}
-                          <span class="invalid-feedback">{{ validation_errors.restorant_email }}</span>
-                      {% endif %}
-                    </div>
+                    {% endfor %}
+                  
+                  </div>
+                  <a class="carousel-control-prev" href="#carouselExample" role="button" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </a>
+                  <a class="carousel-control-next" href="#carouselExample" role="button" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </a>
                 </div>
-                
-              </div>
-              <div class="button-container float-right">
-                <button type="submit" class="btn btn-primary centered-button">Save</button>
-              </div>
-              </div>
-            </form>
+                {% endif %}
+                <div class="mb-3">
+                  <label class="text-muted">Address</label>
+                  <textarea type="textarea" name="address" class="form-control">{{ profile.address }}</textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Location</label>
+                  <textarea type="textarea" name="location" class="form-control">{{ profile.location }}</textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Working Time</label>
+                  {% for wt in working_times %}  
+                    <br>
+                    <input type="checkbox" class="working_times" name="working_times[]" {% for wTD in workingTimeDetails %} {% if wTD.working_time == wt.id %} checked {% endif %} {% endfor %} value="{{ wt.id }}"> {{ wt.name }}
+                  {% endfor %}  
+              
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Order Options</label>
+                  {% for op in order_options %}  
+                    <br>
+                    <input type="checkbox" name="order_options[]" {% for orP in orderOptions %} {% if orP.order_option == op.id %} checked {% endif %} {% endfor %} value="{{ op.id }}"> {{ op.name }}
+                  {% endfor %}  
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Contact No</label>
+                  <input type="text" name="public_contact_no" class="form-control {% if validation_errors.public_contact_no %} is-invalid {% endif %}" value="{{ profile.contact_no }}">
+                  {% if validation_errors.public_contact_no %}
+                      <span class="invalid-feedback">{{ validation_errors.public_contact_no }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Whatsapp No</label>
+                  <input type="text" name="public_whatsapp_no" class="form-control {% if validation_errors.public_whatsapp_no %} is-invalid {% endif %}" value="{{ profile.whatsapp_no }}">
+                  {% if validation_errors.public_whatsapp_no %}
+                      <span class="invalid-feedback">{{ validation_errors.public_whatsapp_no }}</span>
+                  {% endif %}
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted">Email</label>
+                  <input type="email" name="restorant_email" class="form-control {% if validation_errors.restorant_email %} is-invalid {% endif %}" value="{{ profile.email }}">
+                  {% if validation_errors.restorant_email %}
+                      <span class="invalid-feedback">{{ validation_errors.restorant_email }}</span>
+                  {% endif %}
+                </div>
             </div>
-        </div>
+            
+          </div>
+          <div class="button-container float-right">
+            <button type="submit" class="btn btn-primary centered-button">Update</button>
+          </div>
+          </div>
+        </form>
+      </div>
       </div>
     </div>
-  </section>    
+  </div>
+</div>
 
-  {% endblock %}
+{% load static %}
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+<script>
+  $(document).ready(function(){
+    $(document).on('change', '#id_picture', function(){
+      
+      const file = this.files[0];
+
+      // Check if a file is selected
+      if (file) {
+          // Create a FileReader
+          const reader = new FileReader();
+
+          // Set up the FileReader to read the file as a data URL
+          reader.readAsDataURL(file);
+
+          // Define what to do once the file is loaded
+          reader.onload = function(e) {
+              // Display the image preview
+              $("#profile_image").attr("src", e.target.result);
+          };
+      }
+    });
+  });
+</script>
+{% endblock %}
+

@@ -20,14 +20,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('auth/', include('Auth.urls')),
-    path('', include('Dashboard.urls')),
+    path('dashboard/', include('Dashboard.urls')),
     path('groups/', include('Groups.urls')),
     path('categories/', include('Category.urls')),
+    path('add-ons/', include('Addons.urls')),
+    path('items/', include('Items.urls')),
     path('order-status/', include('OrderStatus.urls')),
     path('profiles/', include('ProfileSetup.urls')),
     path('delivary-boys/', include('DelivaryBoys.urls')),
     path('users/', include('User.urls')),
+    path('roles/', include('Roles.urls')),
+    path('settings/', include('Settings.urls')),
     path('api/', include('api.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

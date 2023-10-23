@@ -8,4 +8,5 @@ class DelivaryBoy(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     mobile_no = models.CharField(max_length=200, null=True)
     place = models.CharField(max_length=200, null=True)
+    username = models.CharField(max_length=200, null=True)
     password = models.CharField(max_length=200, null=True)

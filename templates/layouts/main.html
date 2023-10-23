@@ -1,42 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<!-- =========================================================
+* Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
+==============================================================
+
+* Product Page: https://themeselection.com/products/sneat-bootstrap-html-admin-template/
+* Created by: ThemeSelection
+* License: You must have a valid license purchased in order to legally use the theme for your project.
+* Copyright ThemeSelection (https://themeselection.com)
+
+=========================================================
+ -->
+<!-- beautify ignore:start -->
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="../assets/"
+  data-template="vertical-menu-template-free"
+>
+  
 {% include 'layouts/masters/head.html' %}
-<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
 
-<div class="wrapper">
+        {% include 'layouts/partials/sidebar.html' %}
+        <!-- / Menu -->
 
-  <!-- Preloader -->
-  {% comment %} <div class="preloader flex-column justify-content-center align-items-center">
-    {% load static %}
-    <img class="animation__wobble" src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTELogo" height="60" width="60">
-  </div> {% endcomment %}
+        <!-- Layout container -->
+        <div class="layout-page">
+          <!-- Navbar -->
 
-  <!-- Navbar -->
-  {% include 'layouts/partials/header.html' %}
-  <!-- /.navbar -->
+            {% include 'layouts/partials/header.html' %}
 
-  <!-- Main Sidebar Container -->
-  {% include 'layouts/partials/sidebar.html' %}    
+          <!-- / Navbar -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    {% block 'content' %} {% endblock %}
-  </div>
-  <!-- /.content-wrapper -->
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Content -->
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-light">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
+                {% block 'content' %} {% endblock %}
+            <!-- / Content -->
 
-  <!-- Main Footer -->
-  {% include 'layouts/partials/footer.html' %}
-</div>
-<!-- ./wrapper -->
-{% load static %}
-<!-- REQUIRED SCRIPTS -->
-{% include 'layouts/masters/scripts.html' %}
+            <!-- Footer -->
+                {% include 'layouts/partials/footer.html' %}
+            <!-- / Footer -->
 
-</body>
+            <div class="content-backdrop fade"></div>
+          </div>
+          <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+      </div>
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+    
+    {% include 'layouts/masters/scripts.html' %}
+  </body>
 </html>

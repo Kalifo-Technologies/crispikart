@@ -1,54 +1,34 @@
 {% extends 'layouts/main.html' %}
 
 {% block 'content' %}
-    <!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0">Order Status</h1>
-        </div><!-- /.col -->
-        <div class="col-sm-6">
-          {% comment %} <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard v2</li>
-          </ol> {% endcomment %}
-        </div><!-- /.col -->
-      </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </div>
-  <!-- /.content-header -->
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Order Status</h4>
 
-  <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
-      <!-- Info boxes -->
-      
-      <div class="card">
-        <div class="card-header">
-            <a href="#" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#addOrderStatusModal">+ Add</a>
-        </div>
-        <div class="card-body">
-          
-          <table class="table table-striped" id="orderStatusTable">
-            <thead>
-              <tr>
-                <th>NO</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {% if orderStatusCount > 0 %}
+  <!-- Basic Bootstrap Table -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between">
+      <h4 class="d-flex justify-content-start">Order Status</h4>
+      <a href="#" class="btn btn-primary d-flex justify-content-end" data-bs-toggle="modal" data-bs-target="#addOrderStatusModal">+ Add</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+      <table class="table" id="orderStatusTable">
+        <thead class="table-light">
+          <tr>
+            <th>NO</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          {% if orderStatusCount > 0 %}
               {% for os in orderStatus %}
               
                 <tr>
                   <td>{{ forloop.counter }}</td>
                   <td>{{ os.name }}</td>
                   <td class="float-right">
-                    <a href="#" id='editOrderStatusBtn' data-edit-name="{{ os.name }}" data-edit-id="{{ os.id }}" class="btn btn-warning btn-sm editOrderStatusBtn"><i class="fa fa-edit" data-toggle="modal" data-target="#editOrderStatusModal"></i></a> 
-                    <a href="#" id='deleteOrderStatusBtn' data-delete-id="{{ os.id }}" class="btn btn-danger btn-sm deleteOrderStatusBtn"><i class="fa fa-trash" data-toggle="modal" data-target="#deleteOrderStatusModal"></i></a>
+                    <a href="#" id='editOrderStatusBtn' data-edit-name="{{ os.name }}" data-edit-id="{{ os.id }}" class="btn btn-warning btn-sm editOrderStatusBtn" data-bs-toggle="modal" data-bs-target="#editOrderStatusModal"><i class="fa fa-edit"></i></a> 
+                    <a href="#" id='deleteOrderStatusBtn' data-delete-id="{{ os.id }}" class="btn btn-danger btn-sm deleteOrderStatusBtn" data-bs-toggle="modal" data-bs-target="#deleteOrderStatusModal"><i class="fa fa-trash"></i></a>
                   </td>
                 </tr>
               {% endfor %}
@@ -57,11 +37,11 @@
                   <td colspan="3">No data available in table</td>
                 </tr>
               {% endif %}
-            </tbody>
-          </table>
-        </div>
-        <div class="card-footer">
-          {% if orderStatus and orderStatus.has_next or orderStatus.has_previous %}
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer d-flex justify-content-end">
+      {% if orderStatus and orderStatus.has_next or orderStatus.has_previous %}
           <div class="pl-2">
             <nav aria-label="Page navigation example ml-5">
               <ul class="pagination float-right">
@@ -99,231 +79,221 @@
           </div>
           {% endif %}
         </div>
+  </div>
+</div>
+
+<!-- Add Group Modal -->
+<div class="modal fade" id="addOrderStatusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Order Status</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
-      <!-- /.row -->
-    </div><!--/. container-fluid -->
-  </section>
-  <!-- /.content -->
-
-    {% if groups and groups.has_next or groups.has_previous %}
-    <div class="pl-2">
-      <nav aria-label="Page navigation example ml-5">
-        <ul class="pagination">
-
-          {% if groups.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{groups.previous_page_number}}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Previous</span>
-              </a>
-            </li>
-          {% endif %}
-
-          {% for n in nums %}
-            <li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{forloop.counter}}</a></li>
-          {% endfor %}
-
-          {% if groups.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{groups.next_page_number}}" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-                <span class="sr-only">Next</span>
-              </a>
-            </li>
-          {% endif %}
-
-        </ul>
-      </nav>
+      <form action="{% url 'addOrderStatus' %}" method="POST" id="addOrderStatusForm">
+        {% csrf_token %}
+      <div class="modal-body">
+          <div class="form-group">
+              <label>Status <strong class="text-danger">*</strong></label>
+              <input type="text" name="name" id="name-field" class="form-control">
+              <span class="invalid-feedback"></span>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary btnSave">Save</button>
+      </div>
+      </form>
     </div>
-    {% endif %}
-    
-  <!-- Add Group Modal -->
-  <div class="modal fade" id="addOrderStatusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Order Status</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="{% url 'addOrderStatus' %}" method="POST" id="addOrderStatusForm">
-          {% csrf_token %}
+  </div>
+</div>
+
+<!-- Edit Group Modal -->
+
+<div class="modal fade" id="editOrderStatusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Order Status</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form action="{% url 'editOrderStatus' %}" method="POST" id="editOrderStatusForm">
+        {% csrf_token %}
         <div class="modal-body">
-            <div class="form-group">
-                <label>Status <strong class="text-danger">*</strong></label>
-                <input type="text" name="name" id="name-field" class="form-control">
-                <span class="invalid-feedback"></span>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary btnSave">Save</button>
-        </div>
-        </form>
+          <div class="form-group">
+              <label>Status <strong class="text-danger">*</strong></label>
+              <input type="text" id="edit-name-field" name="name" class="form-control">
+              <input type="hidden" id="edit-id" name="id" class="form-control">
+              <span class="invalid-feedback"></span>
+          </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary btnUpdate">Update</button>
+      </div>
+      </form>
     </div>
   </div>
+</div>
 
-  <!-- Edit Group Modal -->
+<!-- delete Group modal -->
 
-  <div class="modal fade" id="editOrderStatusModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit Order Status</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="{% url 'editOrderStatus' %}" method="POST" id="editOrderStatusForm">
-          {% csrf_token %}
-          <div class="modal-body">
-            <div class="form-group">
-                <label>Status <strong class="text-danger">*</strong></label>
-                <input type="text" id="edit-name-field" name="name" class="form-control">
-                <input type="hidden" id="edit-id" name="id" class="form-control">
-                <span class="invalid-feedback"></span>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary btnUpdate">Update</button>
-        </div>
-        </form>
+<!-- Modal HTML -->
+<div id="deleteOrderStatusModal" class="modal fade">
+  <div class="modal-dialog modal-dialog-centered modal-confirm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <div class="icon-box">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </div> -->
+        <h4 class="modal-title">Are you sure?</h4>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
+
+      <form action="{% url 'deleteOrderStatus' %}" method="POST" id="deleteOrderStatusForm">
+
+        {% csrf_token %}
+        <input type="hidden" id="delete-id" name="id">
+
+      <div class="modal-body">
+        <p>Do you really want to delete these records? This process cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger btnDelete">Delete</button>
+      </div>
+      </form>
     </div>
   </div>
+</div>
 
-  <!-- delete Group modal -->
+                      <div
+                        class="bs-toast toast fade show bg-success category-toast d-none"
+                        role="alert"
+                        aria-live="assertive"
+                        aria-atomic="true"
+                      >
+                        <div class="toast-header">
+                          <i class="bx bx-bell me-2"></i>
+                          <div class="me-auto fw-semibold toast-title">Bootstrap</div>
+                          {% comment %} <small>11 mins ago</small> {% endcomment %}
+                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                          
+                        </div>
+                      </div>
 
-  <!-- Modal HTML -->
-  <div id="deleteOrderStatusModal" class="modal fade">
-    <div class="modal-dialog modal-confirm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <!-- <div class="icon-box">
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </div> -->
-          <h4 class="modal-title">Are you sure?</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        </div>
-
-        <form action="{% url 'deleteOrderStatus' %}" method="POST" id="deleteOrderStatusForm">
-
-          {% csrf_token %}
-          <input type="hidden" id="delete-id" name="id">
-
-        <div class="modal-body">
-          <p>Do you really want to delete these records? This process cannot be undone.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-danger btnDelete">Delete</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  
-
-  {% load static %}
-    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-    {% comment %} <script src="{% static 'js/ajax.js' %}"></script> {% endcomment %}
-    <script>
-      $(function(){
+{% load static %}
+<script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'assets/js/ajax.js' %}"></script>
+  <script>
+    $(function(){
         
-        $("#addOrderStatusForm").on('click', '.btnSave', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#addOrderStatusForm").attr('action'),
-            type: "POST",
-            data: $("#addOrderStatusForm").serialize(),
-
-            success: function(response) {
-              toastr.success(response.message);
-              $("#addOrderStatusModal").modal('hide');
-              $("#addOrderStatusForm").trigger('reset');
-              $("#name-field").removeClass('is-invalid');
-              $(".invalid-feedback").text("");
-              setTimeout(function(){
-                location.reload();
-              }, 1000);
-            },
-            error: function(error) {
-              if(error.responseJSON.name != '') {
-                $("#name-field").addClass('is-invalid');
-                $(".invalid-feedback").text(error.responseJSON.name);
-              }
-              
-            }
-          });
-        });
-
-        $("#orderStatusTable").on('click', '.editOrderStatusBtn', function() {
-          let id = $(this).data("edit-id");
-          let name = $(this).data('edit-name');
-          $("#edit-id").val(id);
-          $("#edit-name-field").val(name);
+      $("#addOrderStatusForm").on('click', '.btnSave', function(e){
+        e.preventDefault();
         
-        });
+        $.ajax({
+          url: $("#addOrderStatusForm").attr('action'),
+          type: "POST",
+          data: $("#addOrderStatusForm").serialize(),
 
-        $("#editOrderStatusForm").on('click', '.btnUpdate', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#editOrderStatusForm").attr('action'),
-            type: "POST",
-            data: $("#editOrderStatusForm").serialize(),
-
-            success: function(response) {
-              toastr.success(response.message);
-              $("#editOrderStatusModal").modal('hide');
-              $("#editOrderStatusForm").trigger('reset');
-              $("#edit-name-field").removeClass('is-invalid');
-              $(".invalid-feedback").text("");
-              setTimeout(function(){
-                location.reload();
-              }, 1000);
-            },
-            error: function(error) {
-              if(error.responseJSON.name != '') {
-                $("#edit-name-field").addClass('is-invalid');
-                $(".invalid-feedback").text(error.responseJSON.name);
-              }
-              
+          success: function(response) {
+            toastr.success(response.message);
+            $("#addOrderStatusModal").modal('hide');
+            $("#addOrderStatusForm").trigger('reset');
+            $("#name-field").removeClass('is-invalid');
+            $(".invalid-feedback").text("");
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            if(error.responseJSON.name != '') {
+              $("#name-field").addClass('is-invalid');
+              $(".invalid-feedback").text(error.responseJSON.name);
             }
-          });
-        });
-
-        $("#orderStatusTable").on('click', '.deleteOrderStatusBtn', function() {
-          let id = $(this).data("delete-id");
-          $("#delete-id").val(id);
-        });
-
-        $("#deleteOrderStatusForm").on('click', '.btnDelete', function(e){
-          e.preventDefault();
-          
-          $.ajax({
-            url: $("#deleteOrderStatusForm").attr('action'),
-            type: "POST",
-            data: $("#deleteOrderStatusForm").serialize(),
-
-            success: function(response) {
-              toastr.success(response.message);
-              $("#deleteOrderStatusModal").modal('hide');
-              setTimeout(function(){
-                location.reload();
-              }, 1000);
-            },
-            error: function(error) {
-              
-            }
-          });
+            
+          }
         });
       });
-    </script>
-    {% comment %} <script src="{% static 'js/groups.js' %}"></script> {% endcomment %}
-  {% endblock %}
+
+      $("#orderStatusTable").on('click', '.editOrderStatusBtn', function() {
+        let id = $(this).data("edit-id");
+        let name = $(this).data('edit-name');
+        $("#edit-id").val(id);
+        $("#edit-name-field").val(name);
+      
+      });
+
+      $("#editOrderStatusForm").on('click', '.btnUpdate', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+          url: $("#editOrderStatusForm").attr('action'),
+          type: "POST",
+          data: $("#editOrderStatusForm").serialize(),
+
+          success: function(response) {
+            toastr.success(response.message);
+            $("#editOrderStatusModal").modal('hide');
+            $("#editOrderStatusForm").trigger('reset');
+            $("#edit-name-field").removeClass('is-invalid');
+            $(".invalid-feedback").text("");
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            if(error.responseJSON.name != '') {
+              $("#edit-name-field").addClass('is-invalid');
+              $(".invalid-feedback").text(error.responseJSON.name);
+            }
+            
+          }
+        });
+      });
+
+      $("#orderStatusTable").on('click', '.deleteOrderStatusBtn', function() {
+        let id = $(this).data("delete-id");
+        $("#delete-id").val(id);
+      });
+
+      $("#deleteOrderStatusForm").on('click', '.btnDelete', function(e){
+        e.preventDefault();
+        
+        $.ajax({
+          url: $("#deleteOrderStatusForm").attr('action'),
+          type: "POST",
+          data: $("#deleteOrderStatusForm").serialize(),
+
+          success: function(response) {
+            toastr.success(response.message);
+            $("#deleteOrderStatusModal").modal('hide');
+            setTimeout(function(){
+              location.reload();
+            }, 1000);
+          },
+          error: function(error) {
+            
+          }
+        });
+      });
+    });
+  </script>
+{% endblock %}

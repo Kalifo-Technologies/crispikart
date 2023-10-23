@@ -1,0 +1,158 @@
+$('#addUserForm').on('submit', function(event) {
+    event.preventDefault();
+    
+    $.ajax({
+        url: $("#addUserForm").attr('action'),
+        type: 'POST',
+        data: new FormData(this),
+        
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          toastr.success(response.message);
+          $("#addUserModal").modal('hide');
+          $("#addUserForm").trigger('reset');
+          $("#firstname-field").removeClass('is-invalid');
+          $("#lastname-field").removeClass('is-invalid');
+          $("#username-field").removeClass('is-invalid');
+          $("#email-field").removeClass('is-invalid');
+          $("#role-field").removeClass('is-invalid');
+          $("#password-field").removeClass('is-invalid');
+          
+          $(".firstname-error-message").text("");
+          $(".lastname-error-message").text("");
+          $(".username-error-message").text("");
+          $(".email-error-message").text("");
+          $(".role-error-message").text("");
+          $(".password-error-message").text("");
+          
+          $(".invalid-feedback").text("");
+          setTimeout(function(){
+            location.reload();
+          }, 1000);
+        },
+        error: function(error) {
+          console.log(error);
+          if(error.responseJSON.first_name != '') {
+            $("#firstname-field").addClass('is-invalid');
+            $(".firstname-error-message").text(error.responseJSON.first_name);
+          }
+          if(error.responseJSON.last_name != '') {
+            $("#lastname-field").addClass('is-invalid');
+            $(".lastname-error-message").text(error.responseJSON.last_name);
+          }
+          if(error.responseJSON.username != '') {
+              $("#username-field").addClass('is-invalid');
+              $(".username-error-message").text(error.responseJSON.username);
+          }
+          if(error.responseJSON.email != '') {
+              $("#email-field").addClass('is-invalid');
+              $(".email-error-message").text(error.responseJSON.email);
+          }
+          if(error.responseJSON.role) != '') {
+            $("#role-field").addClass('is-invalid');
+            $(".role-error-message").text(error.responseJSON.role);
+          }
+          if(error.responseJSON.password != '') {
+              $("#password-field").addClass('is-invalid');
+              $(".password-error-message").text(error.responseJSON.password);
+          }
+        }
+    });
+});
+  
+  $("#usersTable").on('click', '.editUserBtn', function() {
+    let id = $(this).data("id");
+    let firstname = $(this).data("firstname");
+    let lastname = $(this).data("lastname");
+    let username = $(this).data("username");
+    let email = $(this).data('email');
+    let role = $(this).data('role');
+  
+    $("#edit-user-id").val(id);
+    $("#edit-firstname-field").val(firstname);
+    $("#edit-lastname-field").val(lastname);
+    $("#edit-username-field").val(username);
+    $("#edit-email-field").val(email);
+    $("#edit-role-field").val(role).trigger('change');
+  });
+
+  $("#editUserForm").on('submit', function(e){
+    e.preventDefault();
+    
+    $.ajax({
+      url: $("#editUserForm").attr('action'),
+      type: "POST",
+      data: new FormData(this),
+      processData: false,
+      contentType: false,
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      success: function(response) {
+        toastr.success(response.message);
+        $("#editUserModal").modal('hide');
+        $("#editUserModal").trigger('reset');
+        $("#edit-firstname-field").removeClass('is-invalid');
+        $("#edit-lastname-field").removeClass('is-invalid');
+        $("#edit-username-field").removeClass('is-invalid');
+        $("#edit-email-field").removeClass('is-invalid');
+        $("#edit-role-field").removeClass('is-invalid');
+        $(".invalid-feedback").text("");
+        setTimeout(function(){
+          location.reload();
+        }, 1000);
+      },
+      error: function(error) {
+        if(error.responseJSON.first_name != '') {
+          $("#edit-firstname-field").addClass('is-invalid');
+          $(".edit-firstname-error-message").text(error.responseJSON.first_name);
+        }
+        if(error.responseJSON.last_name != '') {
+          $("#edit-lastname-field").addClass('is-invalid');
+          $(".edit-lastname-error-message").text(error.responseJSON.last_name);
+        }
+        if(error.responseJSON.username != '') {
+          $("#edit-username-field").addClass('is-invalid');
+          $(".edit-username-error-message").text(error.responseJSON.username);
+        }
+        if(error.responseJSON.email != '') {
+          $("#edit-email-field").addClass('is-invalid');
+          $(".edit-email-error-message").text(error.responseJSON.email);
+        }
+        if(error.responseJSON.role != '') {
+          $("#edit-role-field").addClass('is-invalid');
+          $(".edit-role-error-message").text(error.responseJSON.role);
+        }
+      }
+    });
+  });
+
+  $("#usersTable").on('click', '.deleteUserBtn', function() {
+    let id = $(this).data("id");
+    $("#delete-user-id").val(id);
+  });
+
+  $("#deleteUserForm").on('click', '.btnDelete', function(e){
+    e.preventDefault();
+    
+    $.ajax({
+      url: $("#deleteUserForm").attr('action'),
+      type: "POST",
+      data: $("#deleteUserForm").serialize(),
+
+      success: function(response) {
+        toastr.success(response.message);
+        $("#deleteUserModal").modal('hide');
+        setTimeout(function(){
+          location.reload();
+        }, 1000);
+      },
+      error: function(error) {
+        
+      }
+    });
+  });
